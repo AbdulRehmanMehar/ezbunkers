@@ -9,6 +9,11 @@ export default new VueRouter({
             path: '/',
             name: 'home',
             component: () => import('@/components/Home.vue')
+        },
+        {
+            path: '/signup',
+            name: 'signup',
+            component: () => import('@/components/Signup.vue')
         }
     ]
 })
