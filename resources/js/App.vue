@@ -10,7 +10,7 @@
 
 <script>
     import Navbar from '@/components/partials/Navbar.vue'
-    import Footer from "@/components/partials/Footer"
+    import Footer from "@/components/partials/Footer.vue"
 
     export default{
         name: 'App',
