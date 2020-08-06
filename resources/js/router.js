@@ -14,6 +14,16 @@ export default new VueRouter({
             path: '/signup',
             name: 'signup',
             component: () => import('@/components/Signup.vue')
+        },
+        {
+            path: '/listing',
+            name: 'listing',
+            component: () => import('@/components/Listing.vue')
+        },
+        {
+            path: '/how-it-works',
+            name: 'how-it-works',
+            component: () => import('@/components/HowItWorks.vue')
         }
     ]
 })
