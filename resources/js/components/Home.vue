@@ -6,17 +6,7 @@
                     <div class="inner text-center">
                         <h1 class="display-5 text-uppercase font-weight-bold">Discover. Engage. Review.</h1>
                         <p class="text-capitalize font-weight-lighter">Connects you to the best Bunker Companies Worldwide</p>
-                        <form class="form-inline mt-5 justify-content-center" role="form">
-                            <div class="form-group mb-2">
-                                <label for="location" class="label-before">Near</label>
-                                <input id="location" type="text" class="form-control form-control-lg" placeholder="Location">
-                            </div>
-                            <div class="form-group mx-sm-3 mb-2">
-                                <label for="fuelgrade" class="label-before">Find</label>
-                                <input type="text" class="form-control form-control-lg" id="fuelgrade" placeholder="Grade of Fuel">
-                            </div>
-                            <button type="submit" class="form-control w-auto form-control-lg btn btn-primary btn-lg mb-2">Search</button>
-                        </form>
+                        <Searchbar />
                     </div>
                 </div>
             </div>
@@ -138,14 +128,18 @@
 
 <script>
 
+    import Searchbar from "@/components/partials/Searchbar"
+
     export default{
         name: 'Home',
+        components: { Searchbar },
+
         data() {
             return {
                 banner: require('@/images/Shipping_LogisticsV2.jpg'),
                 banner2: require('@/images/Bunkering_Hose.jpg')
             }
-        }
+        },
     }
 </script>
 
@@ -175,22 +169,7 @@
     .banner .container .inner{
        margin-top: calc(var(--height-after-navbar) / 2.5);
     }
-    .form-inline  .label-before {
-        height: calc(1.5em + 1rem + 2px);
-        padding: 0.5rem 1rem;
-        background: #ffffff;
-        color: #495057;
-        font-size: 1.25rem;
-        line-height: 1.5;
-        border-top-left-radius: .3rem;
-        border-bottom-left-radius: .3rem;
-        margin-right: -1px;
-    }
-    .form-inline .form-control:not(button) {
-        border-top-left-radius: 0 !important;
-        border-bottom-left-radius: 0 !important;
-        border: none !important;
-    }
+
 
     /*Block 2*/
 
