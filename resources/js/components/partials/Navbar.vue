@@ -14,10 +14,13 @@
                     <router-link class="nav-link" :to="{name: 'home'}">Home</router-link>
                 </li>
                 <li class="nav-item">
-                    <router-link class="nav-link" :to="{name: 'signup'}">Sign up</router-link>
+                    <router-link class="nav-link" :to="{name: 'how-it-works'}">How it Works</router-link>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link disabled" href="#">Disabled</a>
+                    <router-link class="nav-link" :to="{name: 'signup'}">Sign Up</router-link>
+                </li>
+                <li class="nav-item">
+                    <router-link class="nav-link" :to="{name: 'login'}">Log In</router-link>
                 </li>
             </ul>
         </div>
