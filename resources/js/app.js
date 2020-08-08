@@ -4,6 +4,7 @@ require('bootstrap')
 
 import Vue from 'vue'
 import App from '@/App.vue'
+import Store from '@/store'
 import router from '@/router'
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
@@ -32,6 +33,7 @@ Vue.component('font-awesome-icon', FontAwesomeIcon)
 Vue.config.productionTip = false
 
 new Vue({
+    Store,
     router,
     render: h => h(App),
 }).$mount('#app')
