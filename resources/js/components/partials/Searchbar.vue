@@ -32,7 +32,7 @@
     }
 </script>
 
-<style scoped lang="css">
+<style lang="css" scoped>
     .form-inline  .label-before {
         height: calc(1.5em + 1rem + 2px);
         padding: 0.5rem 1rem;
