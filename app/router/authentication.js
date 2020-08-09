@@ -77,11 +77,21 @@ router.post('/register', [
         }),
     check('phone').isMobilePhone().withMessage('Enter a valid phone number'),
     check('imo').isMobilePhone().withMessage('Enter a valid imo number'),
-    check('companyName').trim().escape().notEmpty('Enter company name'),
-    check('companyAddress').trim().escape().notEmpty('Enter company address'),
-    check('workTitle').trim().escape().notEmpty('Enter work title'),
-    check('por').notEmpty().withMessage('Select proof of registry'),
-    check('poo').notEmpty().withMessage('Select proof of ownership')
+    check('companyName').trim().escape().notEmpty().withMessage('Enter company name'),
+    check('companyAddress').trim().escape().notEmpty().withMessage('Enter company address'),
+    check('workTitle').trim().escape().notEmpty().withMessage('Enter work title'),
+    check('por').custom((value, { req }) => {
+        if (req.files.por && req.files.por.length > 0) {
+            return true
+        }
+        throw new Error('Select documents for proof of Registry')
+    }),
+    check('poo').custom((value, { req }) => {
+        if (req.files.poo && req.files.poo.length > 0) {
+            return true
+        }
+        throw new Error('Select documents for proof of Ownership')
+    }),
 
 ], async (req, res) => {
 
@@ -145,3 +155,5 @@ router.post('/register', [
     }
 })
 
+
+module.exports = router
