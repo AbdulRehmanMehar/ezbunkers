@@ -14,9 +14,22 @@ const AccountSchema = new Schema({
     companyCountry: String,
     workTitle: String,
     companyDescription: String,
-    vessels: [mongoose.Schema.Types.ObjectId],
-    companyImages: [mongoose.Schema.Types.ObjectId],
-    companyDocuments: [mongoose.Schema.Types.ObjectId],
+    vessels: [{
+        type: Schema.Types.ObjectId,
+        ref: 'Vessel'
+    }],
+    companyImages: [{
+        type: Schema.Types.ObjectId,
+        ref: 'File'
+    }],
+    companyDocuments: [{
+        type: Schema.Types.ObjectId,
+        ref: 'File'
+    }],
+    otp: {
+        type: Schema.Types.ObjectId,
+        ref: 'OTP'
+    }
 })
 
 module.exports = mongoose.model('Account', AccountSchema)
