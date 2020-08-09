@@ -1,0 +1,52 @@
+html, body {
+  font-family: sans-serif;
+}
+
+// NAVBAR
+.navbar {
+  padding: 0rem 1rem;
+}
+
+.navbar.bg-light {
+  background-color: #ffffff !important;
+}
+//
+//.navbar .navbar-nav.ml-auto {
+//  margin-right: 25rem;
+//}
+
+.navbar .navbar-nav .nav-link{
+  margin: 0 .4rem;
+  color: #000000;
+  font-size: 1rem;
+  padding: 1.5rem 1rem;
+  text-transform: uppercase;
+}
+
+.navbar .navbar-nav .nav-link.router-link-exact-active {
+  color: #721c24;
+}
+
+
+// Router View
+.router-view {
+  --height-after-navbar: calc(100vh - 4.7rem);
+}
+
+//
+
+.text-11 {
+  font-size: 11px;
+}
+
+.text-12 {
+  font-size: 12px;
+}
+
+.text-14 {
+  font-size: 14px;
+}
+
+.text-grey {
+  color: #999999;
+}
