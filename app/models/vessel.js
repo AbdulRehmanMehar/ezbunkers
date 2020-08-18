@@ -3,8 +3,16 @@ const Schema = mongoose.Schema
 
 const VesselSchema = new Schema({
     name: String,
-    image: mongoose.Schema.Types.ObjectId,
-    fuel: [mongoose.Schema.Types.ObjectId],
+    image: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'File',
+    },
+    fuel: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Fuel'
+        }
+    ],
 })
 
 module.exports = mongoose.model('Vessel', VesselSchema)
