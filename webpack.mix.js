@@ -25,7 +25,7 @@ mix.webpackConfig({
 mix.setPublicPath('public/');
 mix.webpackConfig({
     output: {
-        chunkFilename: 'js/chunks/[name].js',
+        chunkFilename: 'js/chunks/[name].bundle.js',
     },
 });
 
