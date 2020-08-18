@@ -2,11 +2,26 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
 const NominationSchema = new Schema({
-    sellerId: mongoose.Schema.Types.ObjectId,
-    buyerId: mongoose.Schema.Types.ObjectId,
-    fuelType: [mongoose.Schema.Types.ObjectId],
+    sellerId: {
+        type:  mongoose.Schema.Types.ObjectId,
+        ref: 'Account'
+    },
+    buyerId: {
+        type:  mongoose.Schema.Types.ObjectId,
+        ref: 'Account'
+    },
+    buyerEmail: String,
+    fuelType: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Fuel'
+        }
+    ],
     fuelQuantity: Number,
-    vesselId: mongoose.Schema.Types.ObjectId,
+    vesselId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Vessel'
+    },
     vesselSize: Number,
     price: Number,
     destination: String,
