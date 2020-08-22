@@ -11,6 +11,10 @@ let mix = require('laravel-mix');
  |
  */
 
+mix.babelConfig({
+    plugins: ['@babel/plugin-syntax-dynamic-import'],
+});
+
 mix.js('resources/js/app.js', 'public/js').sass('resources/scss/app.scss', 'public/css');
 
 mix.webpackConfig({
