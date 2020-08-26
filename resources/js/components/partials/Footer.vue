@@ -28,6 +28,9 @@
                         <li class="nav-item my-2">
                             <router-link :to="{name: 'how-it-works'}" class="text-dark">How it Works?</router-link>
                         </li>
+                        <li class="nav-item my-2">
+                          <router-link :to="{name: 'admin-login'}" class="text-dark">Admin Area</router-link>
+                        </li>
                     </ul>
                 </div>
             </div>

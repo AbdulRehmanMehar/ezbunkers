@@ -13,15 +13,30 @@
                 <li class="nav-item">
                     <router-link class="nav-link" :to="{name: 'home'}">Home</router-link>
                 </li>
-                <li class="nav-item">
-                    <router-link class="nav-link" :to="{name: 'how-it-works'}">How it Works</router-link>
-                </li>
-                <li class="nav-item">
-                    <router-link class="nav-link" :to="{name: 'signup'}">Sign Up</router-link>
-                </li>
-                <li class="nav-item">
-                    <router-link class="nav-link" :to="{name: 'login'}">Log In</router-link>
-                </li>
+
+                <div  style="display: inherit" v-if="adminAccount">
+
+                    <li class="nav-item">
+                        <router-link class="nav-link" :to="{name: 'admin-dashboard'}">Admin Dashboard</router-link>
+                    </li>
+
+                    <li class="nav-item">
+                        <a href="#" class="nav-link" @submit.prevent="logoutAdmin">Logout</a>
+                    </li>
+
+                </div>
+
+                <div style="display: inherit" v-else>
+                    <li class="nav-item">
+                        <router-link class="nav-link" :to="{name: 'how-it-works'}">How it Works</router-link>
+                    </li>
+                    <li class="nav-item">
+                        <router-link class="nav-link" :to="{name: 'signup'}">Sign Up</router-link>
+                    </li>
+                    <li class="nav-item">
+                        <router-link class="nav-link" :to="{name: 'login'}">Log In</router-link>
+                    </li>
+                </div>
             </ul>
         </div>
         </div>
@@ -35,6 +50,22 @@
             return {
                 logo: require('@/images/ezbunk.0caa7f64.png')
             }
+        },
+
+        computed: {
+          adminAccount() {
+            return this.$store.getters['Adminlogin/account']
+          },
+
+          standardAccount() {
+            return false
+          },
+        },
+
+        methods: {
+          logoutAdmin() {
+            this.$store.dispatch('Adminlogin/logout')
+          }
         }
     }
 </script>
