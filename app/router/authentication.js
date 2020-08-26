@@ -1,16 +1,20 @@
 require('dotenv').config()
-const fs = require('fs')
+const multer = require('multer')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const { v4: uuidv4 } = require('uuid')
 const OTPModel = require('../models/otp')
+const mailer = require('../config/mails')
 const router = require('express').Router()
 const FileModel = require('../models/file')
 const generateOTP = require('../config/otp')
 const AdminModel = require('../models/admin')
 const AccountModel = require('../models/account')
+const multerConf = require('../helpers/multerConf')
 const { check, validationResult } = require('express-validator')
+const OneTimePasswordMail = require('../config/mails/templates/otp')
 const authenticatedMiddleware = require('../middlewares/authenticated')
+const accountRegistrationMail = require('../config/mails/templates/account-registration')
 
 
 router.post('/login',
@@ -25,9 +29,10 @@ router.post('/login',
             throw new Error('No such user was found.')
         }),
 
-    check('password').custom((value, { req }) => {
-        if (req.account.password) {
-            if (bcrypt.compareSync(value, req.account.password)) {
+    check('password').custom(async (value, { req }) => {
+        let account = await AccountModel.findOne({ uid: req.body.uid })
+        if (account.password) {
+            if (bcrypt.compareSync(value, account.password)) {
                 return true
             }
             throw new Error('Password is incorrect.')
@@ -35,7 +40,7 @@ router.post('/login',
             let otp = req.body.otp
 
             if (otp) {
-                if (req.account.otp.code == otp) {
+                if (account.otp.code == otp) {
                     return true
                 } else {
                     throw new Error('OTP is not valid.')
@@ -45,7 +50,7 @@ router.post('/login',
         }
     })
 ],
-(req, res) => {
+async (req, res) => {
 
     const errors = validationResult(req)
     if (!errors.isEmpty()) {
@@ -53,10 +58,12 @@ router.post('/login',
             errors: errors.array()
         })
     }
-
-    let account = req.account
+    let account = await AccountModel.findOne({ uid: req.body.uid })
+    account = account.toObject()
 
     delete account.password
+    delete account._id
+    delete account._v
 
     const token = jwt.sign(account, process.env.APP_SECRET)
     account.token = token
@@ -82,10 +89,12 @@ async (req, res) => {
             if (!account.password) {
                 let theOTP = await OTPModel({
                     code: generateOTP(),
-                    account: account._id
+                    account: account
                 }).save()
 
-                await AccountModel.findByIdAndUpdate(account._id, {otp: theOTP._id})
+                await mailer(account.email, 'Use it to Login', theOTP(account))
+
+                await AccountModel.findByIdAndUpdate(account._id, {otp: theOTP})
 
                 status = 201
             }
@@ -93,7 +102,9 @@ async (req, res) => {
 
         }
 
-        return res.status(status)
+        return res.status(status).json({
+            message: 'Done!'
+        })
 
     } catch (error) {
         return res.status(500).json({
@@ -104,6 +115,7 @@ async (req, res) => {
 
 
 router.post('/register',
+multer(multerConf).fields([{ name: 'poo' }, { name: 'por' }]),
 [
     check('name').trim().escape().notEmpty().withMessage('Name is required'),
     check('email').isEmail().withMessage('Enter a valid email')
@@ -129,13 +141,13 @@ router.post('/register',
     check('companyAddress').trim().escape().notEmpty().withMessage('Enter company address'),
     check('workTitle').trim().escape().notEmpty().withMessage('Enter work title'),
     check('por').custom((value, { req }) => {
-        if (req.files.por && req.files.por.length > 0) {
+        if (req.files && req.files.por) {
             return true
         }
         throw new Error('Select documents for proof of Registry')
     }),
     check('poo').custom((value, { req }) => {
-        if (req.files.poo && req.files.poo.length > 0) {
+        if (req.files && req.files.poo) {
             return true
         }
         throw new Error('Select documents for proof of Ownership')
@@ -152,38 +164,31 @@ async (req, res) => {
     }
 
     try {
-        let por = req.files.por, poo = req.files.poo
-        let por_objIds = [], poo_objIds = []
-
-        for (const doc of por) {
-            let temp_path = doc.path
-            let fname = uuidv4() + '-' + doc.filename
-            let target_path = `${__dirname}/uploads/pors/` + fname
-            fs.renameSync(temp_path, target_path)
-            let file = await FileModel({
-                type: 'por',
-                path: `pors/${fname}`,
-                ext: (path.extname(doc.filename)).toLowerCase()
-            }).save()
-
-            por_objIds.push(file._id)
-        }
-
-        for (const doc of poo) {
-            let temp_path = doc.path
-            let fname = uuidv4() + '-' + doc.filename
-            let target_path = `${__dirname}/uploads/poo/` + fname
-            fs.renameSync(temp_path, target_path)
-            let file = await FileModel({
+        let pooDocs = [], porDocs = []
+        console.log()
+        for (doc of req.files.poo) {
+            let pooDoc = await new FileModel({
                 type: 'poo',
-                path: `poo/${fname}`,
-                ext: (path.extname(doc.filename)).toLowerCase()
+                path: doc.destination + '/' + doc.filename,
+                ext: doc.originalname.split('.').pop()
             }).save()
-
-            poo_objIds.push(file._id)
+            pooDocs.push(pooDoc)
         }
 
-        let account = await AccountModel({
+        for (doc of req.files.por) {
+            let porDoc = await new FileModel({
+                type: 'por',
+                path: doc.destination + '/' + doc.filename,
+                ext: doc.originalname.split('.').pop()
+            }).save()
+            porDocs.push(porDoc)
+        }
+
+        let companyDocs = [...pooDocs, ...porDocs]
+
+        console.log(companyDocs)
+
+        let account = await new AccountModel({
             type: req.body.role,
             name: req.body.name,
             email: req.body.email,
@@ -192,10 +197,14 @@ async (req, res) => {
             companyName: req.body.companyName,
             companyAddress: req.body.companyAddress,
             workTitle: req.body.workTitle,
-            companyDocuments: [...por_objIds, ...poo_objIds]
+            companyDocuments: companyDocs
         }).save()
 
-        return res.status(201)
+        await mailer(req.body.email, 'You\'re Signed Up!', accountRegistrationMail())
+
+        return res.status(201).json({
+            message: 'Success'
+        })
 
 
     } catch (error) {
@@ -254,13 +263,14 @@ router.post('/admin-login',
         }),
     check('password').notEmpty().withMessage('Please provide password')
         .custom(async (value, {req}) => {
-            if (bcrypt.compareSync(value, req.admin.password)) {
+            let admin = await AdminModel.findOne({ username: req.body.username })
+            if (bcrypt.compareSync(value, admin.password)) {
                 return true
             }
             throw new Error('Password is not valid')
         })
 ],
-(req, res) => {
+async (req, res) => {
     const errors = validationResult(req)
     if (!errors.isEmpty()) {
         return res.status(422).json({
@@ -268,18 +278,29 @@ router.post('/admin-login',
         })
     }
 
-    let admin = req.admin
 
-    delete admin.password
+    try {
 
-    const token = jwt.sign(admin, process.env.APP_SECRET)
-    admin.token = token
+        let admin = await AdminModel.findOne({ username: req.body.username })
+        admin = admin.toObject()
+        delete admin.password
+        delete admin._v
+        delete admin._id
 
-    return res.status(200).json({
-        data: {
-            admin
-        }
-    })
+        const token = jwt.sign(admin, process.env.APP_SECRET)
+        admin.token = token
+        admin.type = 'admin'
+
+        return res.status(200).json({
+            data: {
+                admin
+            }
+        })
+    } catch (error) {
+        return res.status(500).json({
+            error
+        })
+    }
 
 })
 
