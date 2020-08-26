@@ -21,7 +21,7 @@
                     </li>
 
                     <li class="nav-item">
-                        <a href="#" class="nav-link" @submit.prevent="logoutAdmin">Logout</a>
+                        <a href="#" class="nav-link" @click.prevent="logoutAdmin">Logout</a>
                     </li>
 
                 </div>
@@ -63,9 +63,16 @@
         },
 
         methods: {
+          navigateToRoot(){
+            this.$router.push({ name: 'home' })
+          },
+
           logoutAdmin() {
             this.$store.dispatch('Adminlogin/logout')
-          }
+            this.navigateToRoot()
+          },
+
+
         }
     }
 </script>
