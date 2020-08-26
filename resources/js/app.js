@@ -4,8 +4,10 @@ require('bootstrap')
 
 import Vue from 'vue'
 import App from '@/App.vue'
-import Store from '@/store'
+import store from '@/store'
 import router from '@/router'
+import VueToast from 'vue-toast-notification'
+import VueGoodTablePlugin from 'vue-good-table'
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
     faThumbsUp,
@@ -28,12 +30,19 @@ library.add(
     faPhone
 )
 
+import 'vue-good-table/dist/vue-good-table.css'
+import 'vue-toast-notification/dist/theme-default.css'
+
+Vue.use(VueToast, {
+    position: 'bottom'
+})
+Vue.use(VueGoodTablePlugin)
 Vue.component('font-awesome-icon', FontAwesomeIcon)
 
 Vue.config.productionTip = false
 
 new Vue({
-    Store,
+    store,
     router,
     render: h => h(App),
 }).$mount('#app')
