@@ -1,7 +1,11 @@
+const stylesheet = require('../static/stylesheet')
+
 module.exports = (account) => {
     return `
         
-
+<style>
+            ${stylesheet()}
+        </style>
 <table width="100%" border="0" align="center" cellpadding="0" cellspacing="0" bgcolor="#d0d0d0" style="padding: 0; margin: 0;">
   <!-- START OF TOP BAR-->
   <tr>
