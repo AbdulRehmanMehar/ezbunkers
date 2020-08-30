@@ -1,6 +1,9 @@
+import 'bootstrap/dist/css/bootstrap.min.css'
 window.$ = window.jQuery = require('jquery')
 require('popper.js')
 require('bootstrap')
+import '@/scss/app.scss'
+
 
 import Vue from 'vue'
 import App from '@/App.vue'
