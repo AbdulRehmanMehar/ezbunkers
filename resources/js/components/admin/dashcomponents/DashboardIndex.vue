@@ -5,7 +5,10 @@
       <div class="card-body py-4">
         <h1>Accounts</h1>
         <p>Activate or Deactivate accounts</p>
-        <router-link style="float: right" :to="{ name: 'admin-dashboard-accounts' }" class="btn btn-info">Go</router-link>
+        <div style="float: right">
+          <router-link :to="{ name: 'admin-dashboard-accounts' }" class="btn btn-info my-1">See Accounts Needing Approval</router-link>
+          <router-link :to="{ name: 'admin-dashboard-accounts', params: { type: 'all' } }" class="btn btn-success my-1">See All Accounts</router-link>
+        </div>
       </div>
     </div>
 
@@ -13,7 +16,10 @@
       <div class="card-body py-4">
         <h1>Fuel</h1>
         <p>Add fuel types</p>
-        <router-link style="float: right" :to="{ name: 'admin-dashboard-fuel' }" class="btn btn-info">Go</router-link>
+        <div style="float: right">
+          <router-link :to="{ name: 'admin-create-fuel' }" class="btn btn-info">Add Fuel</router-link>
+          <router-link :to="{ name: 'admin-fuel-list' }" class="btn btn-success">See Fuels List</router-link>
+        </div>
       </div>
     </div>
 
@@ -22,7 +28,7 @@
 
 <script>
 export default {
-  name: "DashboardIndex"
+  name: "DashboardIndex",
 }
 </script>
 
