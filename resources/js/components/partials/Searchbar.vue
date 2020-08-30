@@ -49,4 +49,28 @@
         border-bottom-left-radius: 0 !important;
         border: none !important;
     }
+
+    @media screen and (max-width: 600px) {
+      .form-inline.mt-5.my-5 {
+        margin: 1rem 0 !important;
+      }
+      .form-inline  .label-before {
+        margin-right: -5px;
+        display: none;
+      }
+      .form-inline .form-control:not(button) {
+        border-top-left-radius: .3rem !important;
+        border-bottom-left-radius: .3rem !important;
+        display: inline-block;
+      }
+      .form-inline button.form-control {
+        width: 70% !important;
+      }
+    }
+
+    @media screen and (max-width: 320px) {
+      .form-inline button.form-control {
+        width: 95% !important;
+      }
+    }
 </style>
