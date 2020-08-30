@@ -1,6 +1,6 @@
 const stylesheet = require('../static/stylesheet')
 
-module.exports = (account) => {
+module.exports = (name, otp) => {
     return `
         
 <style>
@@ -60,7 +60,7 @@ module.exports = (account) => {
                 <!-- END OF VERTICAL SPACER-->
                 <!-- START OF HEADING TITLE-->
                 <tr>
-                  <td class="center" align="center" valign="top" bgcolor="#f0f0f0" style="padding: 0px 20px;  text-shadow: 1px 1px 0px #ffffff;font-size:24px ; color:#444444; font-family: Lucida Sans Unicode; line-height: 34px; ">Hello ${account.name}! Please verify the email</td>
+                  <td class="center" align="center" valign="top" bgcolor="#f0f0f0" style="padding: 0px 20px;  text-shadow: 1px 1px 0px #ffffff;font-size:24px ; color:#444444; font-family: Lucida Sans Unicode; line-height: 34px; ">Hello ${name}! Please verify the email</td>
                 </tr>
                 <!-- END OF HEADING TITLE-->
                 <!-- START OF VERTICAL SPACER-->
@@ -70,7 +70,7 @@ module.exports = (account) => {
                 <!-- END OF VERTICAL SPACER-->
                 <!-- START OF TEXT-->
                 <tr>
-                  <td class="center" align="center" valign="top" bgcolor="#f0f0f0" style="padding: 0px 20px;  text-shadow: 1px 1px 0px #ffffff;font-size:13px ; color:#727272; font-family: Arial,sans-serif; line-height: 23px; ">Here is the OTP: ${account.otp.number}. Use it to login and set password for the account.</td>
+                  <td class="center" align="center" valign="top" bgcolor="#f0f0f0" style="padding: 0px 20px;  text-shadow: 1px 1px 0px #ffffff;font-size:13px ; color:#727272; font-family: Arial,sans-serif; line-height: 23px; ">Here is the OTP: ${otp}. Use it to login and set password for the account.</td>
                 </tr>
                 <!-- END OF TEXT-->
                 <!-- START OF VERTICAL SPACER-->
