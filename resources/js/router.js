@@ -1,5 +1,4 @@
 import Vue from 'vue'
-import { store } from '@/store'
 import VueRouter from 'vue-router'
 
 
@@ -9,10 +8,38 @@ const isAdminAuthenticated = () => {
     return JSON.parse(localStorage.getItem('admin-account'))
 }
 
+const isUserAuthenticated = () => {
+    return JSON.parse(localStorage.getItem('user-account'))
+}
+
 const adminGaurd = (to, from, next) => {
     let adminAuth = !isAdminAuthenticated()
     if (to.name != 'admin-login' && adminAuth) {
         return next({ name: 'admin-login' })
+    }
+    return next()
+}
+
+const adminGaurdInverted = (to, from, next) => {
+    let adminAuth = !!isAdminAuthenticated()
+    if (adminAuth) {
+        return next({ name: 'admin-dashboard' })
+    }
+    return next()
+}
+
+const userGaurd = (to, from, next) => {
+    let adminAuth = !isUserAuthenticated()
+    if (to.name != 'login' && adminAuth) {
+        return next({ name: 'login' })
+    }
+    return next()
+}
+
+const userGaurdInverted = (to, from, next) => {
+    let adminAuth = !!isUserAuthenticated()
+    if (adminAuth) {
+        return next({ name: 'home' })
     }
     return next()
 }
@@ -38,6 +65,7 @@ export default new VueRouter({
         {
             path: '/login',
             name: 'login',
+            beforeEnter: userGaurdInverted,
             component: () => import('@/components/Login.vue')
         },
         {
@@ -66,6 +94,7 @@ export default new VueRouter({
                 {
                     path: 'login',
                     name: 'admin-login',
+                    beforeEnter: adminGaurdInverted,
                     component: () => import('@/components/admin/Login.vue')
                 },
                 {
@@ -79,10 +108,34 @@ export default new VueRouter({
                             component: () => import('@/components/admin/dashcomponents/DashboardIndex.vue')
                         },
                         {
-                            path: 'accounts',
+                            path: 'accounts/:type?',
                             name: 'admin-dashboard-accounts',
-                            component: () => import('@/components/admin/dashcomponents/Accounts.vue')
-                        }
+                            component: () => import('@/components/admin/dashcomponents/Accounts.vue'),
+                            props: (route) => ({ type: route.params.type || 'needing-approval' })
+                        },
+                        {
+                            path: 'fuel',
+                            name: 'admin-fuel-wrapper',
+                            component: {
+                                template: `<div>
+                                                <router-view></router-view>
+                                            </div>`
+                            },
+
+                            children: [
+                                {
+                                    path: 'all',
+                                    name: 'admin-fuel-list',
+                                    component: () => import('@/components/admin/dashcomponents/FuelList.vue')
+                                },
+
+                                {
+                                    path: 'create',
+                                    name: 'admin-create-fuel',
+                                    component: () => import('@/components/admin/dashcomponents/AddFuel.vue')
+                                },
+                            ]
+                        },
                     ]
                 }
             ]
