@@ -6,10 +6,12 @@ const ChatSchema = new Schema({
     sender: {
         type: Schema.Types.ObjectId,
         ref: 'Account',
+        autopopulate: true
     },
     receiver: {
         type: Schema.Types.ObjectId,
         ref: 'Account',
+        autopopulate: true
     },
 
     date: {
@@ -17,5 +19,8 @@ const ChatSchema = new Schema({
         default: Date.now()
     }
 })
+
+ChatSchema.plugin(require('mongoose-autopopulate'))
+
 
 module.exports = mongoose.model('Chat', ChatSchema)

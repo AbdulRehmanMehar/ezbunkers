@@ -16,20 +16,27 @@ const AccountSchema = new Schema({
     companyDescription: String,
     vessels: [{
         type: Schema.Types.ObjectId,
-        ref: 'Vessel'
+        ref: 'Vessel',
+        autopopulate: true
     }],
     companyImages: [{
         type: Schema.Types.ObjectId,
-        ref: 'File'
+        ref: 'File',
+        autopopulate: true
     }],
     companyDocuments: [{
         type: Schema.Types.ObjectId,
-        ref: 'File'
+        ref: 'File',
+        autopopulate: true
     }],
     otp: {
         type: Schema.Types.ObjectId,
-        ref: 'OTP'
+        ref: 'OTP',
+        autopopulate: true
     }
 })
+
+
+AccountSchema.plugin(require('mongoose-autopopulate'))
 
 module.exports = mongoose.model('Account', AccountSchema)
