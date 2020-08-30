@@ -1,6 +1,6 @@
 const stylesheet = require('../static/stylesheet')
 
-module.exports = (account) => {
+module.exports = (uid) => {
     return `
         <style>
             ${stylesheet()}
@@ -70,7 +70,7 @@ module.exports = (account) => {
                 <!-- END OF VERTICAL SPACER-->
                 <!-- START OF TEXT-->
                 <tr>
-                  <td class="center" align="center" valign="top" bgcolor="#f0f0f0" style="padding: 0px 20px;  text-shadow: 1px 1px 0px #ffffff;font-size:13px ; color:#727272; font-family: Arial,sans-serif; line-height: 23px; ">This email is to inform you that your account is successfully activated. You can use ${account.uid} as your login username!</td>
+                  <td class="center" align="center" valign="top" bgcolor="#f0f0f0" style="padding: 0px 20px;  text-shadow: 1px 1px 0px #ffffff;font-size:13px ; color:#727272; font-family: Arial,sans-serif; line-height: 23px; ">This email is to inform you that your account is successfully activated. You can use ${uid} as your login username!</td>
                 </tr>
                 <!-- END OF TEXT-->
                 <!-- START OF VERTICAL SPACER-->
