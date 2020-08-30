@@ -20,6 +20,7 @@ app.use(bodyParser.json())
 
 app.use(morgan(process.env.DEBUG ? 'dev' : 'combined'))
 app.use(express.static('public'))
+app.use('/uploads', express.static(__dirname + '/app/uploads'))
 
 app.use('/api', ApiRouter)
 
