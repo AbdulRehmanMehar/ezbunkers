@@ -87,13 +87,14 @@ async (req, res) => {
             status = 200
 
             if (!account.password) {
+                let otpCode = generateOTP()
                 let theOTP = await OTPModel({
-                    code: generateOTP(),
+                    code: otpCode,
                     account: account
                 }).save()
 
-                await mailer(account.email, 'Use it to Login', theOTP(account))
 
+                await mailer(account.email, 'Use it to Login', OneTimePasswordMail(account.name, otpCode))
                 await AccountModel.findByIdAndUpdate(account._id, {otp: theOTP})
 
                 status = 201
@@ -287,9 +288,10 @@ async (req, res) => {
         delete admin._v
         delete admin._id
 
+        admin.type = 'admin'
         const token = jwt.sign(admin, process.env.APP_SECRET)
         admin.token = token
-        admin.type = 'admin'
+
 
         return res.status(200).json({
             data: {
