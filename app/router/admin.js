@@ -11,35 +11,22 @@ const AccountActivationEmail = require('../config/mails/templates/account-activa
 router.use(adminMiddleware)
 
 
-router.get('/accounts',
+router.patch('/activate-account/:id',
 async (req, res) => {
     try {
-        let accounts = await AccountModel.find()
-
-        return res.status(200).json({
-            data: {
-                accounts
-            }
-        })
-    } catch (error) {
-        return res.status(500).json({
-            error
-        })
-    }
-})
-
-
-router.patch('activate-account/:id',
-async (req, res) => {
-    try {
-        let account = await AccountModel.findByIdAndUpdate(id, { uid: uuidv4() })
+        let theUID = uuidv4().toString().replace('-', '')
+        let account = await AccountModel.findByIdAndUpdate(req.params.id, { uid: theUID })
         await sendMail(
             account.email,
             'Your account has been activated by the Admin!',
-            AccountActivationEmail(account)
+            AccountActivationEmail(theUID)
         )
 
-        return res.status(200)
+        return res.status(200).json({
+            data: {
+                uid: theUID
+            }
+        })
     } catch (error) {
         return res.status(500).json({
             error
@@ -83,7 +70,9 @@ router.delete('/fuel/:id',
 async (req, res) => {
     try {
         await FuelModel.findByIdAndDelete(req.params.id)
-        return res.status(200)
+        return res.status(200).json({
+            message: 'Success'
+        })
     } catch (error) {
         return res.status(500).json({
             error
