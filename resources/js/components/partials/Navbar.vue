@@ -23,6 +23,20 @@
                 </li>
             </ul>
 
+              <ul class="navbar-nav ml-auto" v-else-if="standardAccount">
+                <li class="nav-item">
+                  <router-link class="nav-link" :to="{name: 'home'}">Home</router-link>
+                </li>
+
+                <li class="nav-item">
+                  <router-link class="nav-link" :to="{name: 'user-dashboard'}">Dashboard</router-link>
+                </li>
+
+                <li class="nav-item">
+                  <a href="#" class="nav-link" @click.prevent="logoutStandardAccount">Logout</a>
+                </li>
+              </ul>
+
               <ul class="navbar-nav ml-auto" v-else>
                 <li class="nav-item">
                   <router-link class="nav-link" :to="{name: 'home'}">Home</router-link>
@@ -52,7 +66,7 @@
           },
 
           standardAccount() {
-            return false
+            return this.$store.getters['Login/account']
           },
         },
 
@@ -66,6 +80,10 @@
             this.navigateToRoot()
           },
 
+          logoutStandardAccount() {
+            this.$store.dispatch('Login/logout')
+            this.navigateToRoot()
+          }
 
         }
     }

@@ -90,10 +90,32 @@ export default {
       return this.$store.getters['Login/loading']
     },
 
+    success() {
+      return this.$store.getters['Login/success']
+    },
+
     seeUserIdAndSetOTPIfNeededResponseCode() {
       return this.$store.getters['Login/validate_uid_response_code']
     },
 
+  },
+
+  watch: {
+    seeUserIdAndSetOTPIfNeededResponseCode() {
+      if (this.seeUserIdAndSetOTPIfNeededResponseCode == 201) {
+        this.$toast.success('Use the OTP we sent to your email to login!')
+      } else if(this.seeUserIdAndSetOTPIfNeededResponseCode == 200) {
+        this.$toast.success('Enter your password to login!')
+      } else if (this.seeUserIdAndSetOTPIfNeededResponseCode == 204) {
+        this.$toast.error('The User ID is invalid.')
+      }
+    },
+
+    errors() {
+      if (this.errors) {
+        this.$toast.error('Yikes! Something isn\'t right!')
+      }
+    }
   },
 
   methods: {
@@ -108,7 +130,7 @@ export default {
             uid: this.uid,
             otp: this.otp
           }).then(() => {
-            this.$router.push({ name: 'set-account-password' })
+            this.$router.push({ name: 'user-dashboard-set-password' })
           })
         } else {
           this.$store.dispatch('Login/do_login_request', {

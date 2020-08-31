@@ -3,7 +3,7 @@
     <div v-if="!loading" class="card">
       <div class="card-header">Set Password</div>
       <div class="card-body">
-        <form @submit.prevent="">
+        <form @submit.prevent="update_password">
           <div class="form-group">
             <label for="name">Password</label>
             <input type="password" id="name" v-model="password" class="form-control" placeholder="*******" required>
@@ -12,13 +12,16 @@
           <div class="form-group">
             <label for="description">Confirm Password</label>
             <input type="password" id="description" v-model="confirmPassword" class="form-control" placeholder="*******" required>
-            <small class="text-danger" v-if="password != confirmPassword">
+            <small class="text-danger" v-if="password != null && confirmPassword != null && password != confirmPassword">
               Passwords don't match.
+            </small>
+            <small v-if="errors.length > 0 && errors.find(error => error.param == 'password')" class="form-text text-danger">
+              {{ errors.find(error => error.param == 'password').msg }}
             </small>
           </div>
 
           <div class="form-group">
-            <button type="submit" class="btn btn-info form-control" :disabled="password != confirmPassword">Create</button>
+            <button type="submit" class="btn btn-info form-control" :disabled="password != confirmPassword">Set</button>
           </div>
         </form>
       </div>
@@ -42,11 +45,43 @@ export default {
       password: null,
       confirmPassword: null
     }
-  }
+  },
 
   computed: {
+    errors() {
+      return this.$store.getters['Userpassword/errors'] || []
+    },
+
     loading() {
-      return false
+      return this.$store.getters['Userpassword/loading']
+    },
+
+    success() {
+      return this.$store.getters['Userpassword/success']
+    },
+  },
+
+  watch: {
+    success() {
+      if (this.success) {
+        this.$toast.success('Success! Password got updated!')
+        this.$router.push({ name: 'user-dashboard' })
+      }
+    },
+
+    errors() {
+      if (this.errors) {
+        this.$toast.error('Yikes! Something isn\'t right!')
+      }
+    }
+  },
+
+  methods: {
+    update_password() {
+      this.$store.dispatch('Userpassword/do_password_update_request', {
+        password: this.password,
+        confirmPassword: this.password
+      })
     }
   }
 
