@@ -29,16 +29,16 @@ const adminGaurdInverted = (to, from, next) => {
 }
 
 const userGaurd = (to, from, next) => {
-    let adminAuth = !isUserAuthenticated()
-    if (to.name != 'login' && adminAuth) {
+    let userAuth = !isUserAuthenticated()
+    if (to.name != 'login' && userAuth) {
         return next({ name: 'login' })
     }
     return next()
 }
 
 const userGaurdInverted = (to, from, next) => {
-    let adminAuth = !!isUserAuthenticated()
-    if (adminAuth) {
+    let userAuth = !!isUserAuthenticated()
+    if (userAuth) {
         return next({ name: 'home' })
     }
     return next()
@@ -79,6 +79,39 @@ export default new VueRouter({
             component: () => import('@/components/HowItWorks.vue')
         },
 
+
+        {
+            path: '/dashboard',
+            name: 'user-dashboard',
+            beforeEnter: userGaurd,
+            component: {
+                template: `
+                    <div>
+                       <div class="container my-5">
+                            <router-view></router-view>
+                        </div>
+                    </div>
+                `
+            },
+
+            children: [
+                {
+                    path: 'set-password',
+                    name: 'user-dashboard-set-password',
+                    component: () => import('@/components/authenticated/AccountPassword.vue')
+                },
+
+                // {
+                //     path: 'home',
+                //     name: 'user-dashboard-home',
+                //     component: () => import('@/components/authenticated/AccountPassword.vue')
+                // }
+            ]
+        },
+
+
+
+        // Admin Dashboard
         {
             path: '/admin',
             name: 'admin',
