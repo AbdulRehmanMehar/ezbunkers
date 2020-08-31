@@ -58,9 +58,17 @@ async (req, res) => {
             errors: errors.array()
         })
     }
-    let account = await AccountModel.findOne({ uid: req.body.uid })
-    account = account.toObject()
 
+
+
+
+    let account = await AccountModel.findOne({ uid: req.body.uid })
+
+    await OTPModel.findByIdAndDelete(account.otp._id)
+    await AccountModel.findOneAndUpdate({ uid: req.body.uid }, { $unset: {otp: account.otp._id} })
+
+
+    account = account.toObject()
     delete account.password
     delete account._id
     delete account._v
@@ -236,13 +244,13 @@ async (req, res) => {
     }
 
     try {
-        await OTPModel.findOneAndDelete({ account: req.account._id })
-        await AccountModel.findByIdAndUpdate(req.account._id, {
-            password: bcrypt.hashSync(req.body.password),
-            otp: null
+        await AccountModel.findOneAndUpdate({ uid: req.account.uid }, {
+            password: bcrypt.hashSync(req.body.password)
         })
 
-        return res.status(200)
+        return res.status(200).json({
+            message: 'Done!'
+        })
     } catch (error) {
         return res.status(500).json({
             error
