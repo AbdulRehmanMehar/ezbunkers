@@ -95,6 +95,11 @@ const getters = {
     accounts: (state) => state.accounts,
     approved_accounts: (state) => state.accounts.filter(account => account.uid != undefined),
     accounts_needing_approval: (state) => state.accounts.filter(account => account.uid == undefined),
+    search_approved_accounts: (state, getters) => (fuel, location) => {
+        return getters.approved_accounts.filter(account => {
+            return !!account.vessels.filter(vessel => vessel.fuel.findIndex(fuel) != -1) && account.country.toLocaleLowerCase() == location.toLocaleLowerCase();
+        })
+    }
 }
 
 export default {
