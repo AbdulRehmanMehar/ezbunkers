@@ -1,9 +1,12 @@
 const fs = require('fs')
+const multer = require('multer')
 const { v4: uuidv4 } = require('uuid')
 const router = require('express').Router()
 const FileModel = require('../models/file')
 const FuelModel = require('../models/fuel')
 const VesselModel = require('../models/vessel')
+const AccountModel = require('../models/account')
+const multerConf = require('../helpers/multerConf')
 const { check, validationResult } = require('express-validator')
 const authenticatedMiddleware = require('../middlewares/authenticated')
 
@@ -11,18 +14,25 @@ router.use(authenticatedMiddleware)
 
 
 router.post('/',
+multer(multerConf).fields([{ name: 'image' }]),
 [
     check('name').trim().escape().notEmpty().withMessage('Enter the name'),
-    check('image').custom((value, {req}) => {
-        if (req.files.image) {
-            return true
-        }
-        throw new Error('Select Image')
-    }),
     check('fuel').custom(async (value) => {
-        let fuel = await FuelModel.findById(value)
+        console.log(value)
+        let checkPoint = true
 
-        if (fuel) {
+        let fuels = value.split(',')
+
+        for (let val of fuels) {
+            let fuel = await FuelModel.findById(val)
+            if (fuel == null || fuel == undefined) {
+                checkPoint = false
+                break
+            }
+        }
+
+
+        if (checkPoint) {
             return true
         }
 
@@ -38,22 +48,30 @@ async (req, res) => {
     }
 
     try {
-        let upload = req.files[0]
-        let image_name = uuidv4() + '-' + upload.filename
-        let target_path = `${__dirname}/uploads/pors/` + image_name
-        fs.renameSync(upload.path, target_path)
+        let image
+        for (doc of req.files.image) {
+            let pooDoc = await new FileModel({
+                type: 'image',
+                path: doc.destination + '/' + doc.filename,
+                ext: doc.originalname.split('.').pop()
+            }).save()
+            image = pooDoc
+        }
 
-        let image =  await FileModel({
-            type: 'image',
-            name: image_name,
-            ext: (path.extname(upload.filename)).toLowerCase()
-        }).save()
+        let fuels = []
+        let fIds = req.body.fuel.split(',')
+        for (let _id of fIds) {
+            let fuel = await FuelModel.findById(_id)
+            fuels.push(fuel)
+        }
 
         let vessel = await VesselModel({
             name: req.body.name,
-            image: image._id,
-            fuel: req.body.fuel
+            image: image,
+            fuel: fuels
         }).save()
+
+        await AccountModel.findOneAndUpdate({email: req.account.email}, { $push: { vessels: vessel } })
 
         return res.status(201).json({
             data: {
@@ -72,9 +90,13 @@ async (req, res) => {
 router.delete('/:id',
 async (req, res) => {
     try {
+
+        await AccountModel.findOneAndUpdate({email: req.account.email}, { $pull: { vessels: req.params.id } })
         await VesselModel.findOneAndDelete(req.params.id)
 
-        return res.status(200)
+        return res.status(200).json({
+            message: 'Done!'
+        })
 
     } catch (error) {
         return res.status(500).json({
@@ -82,6 +104,25 @@ async (req, res) => {
         })
     }
 })
+
+
+router.get('/mine',
+    async (req, res) => {
+        try {
+            let account = await AccountModel.findOne({ email: req.account.email })
+
+            return res.status(200).json({
+                data: {
+                    vessels: account.vessels
+                }
+            })
+        } catch (error) {
+            return res.status(500).json({
+                error
+            })
+        }
+    })
+
 
 
 module.exports = router
