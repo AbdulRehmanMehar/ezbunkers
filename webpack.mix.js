@@ -144,7 +144,19 @@ if (!mix.isWatching()) {
     });
 }
 
+if (mix.inProduction()) {
+    mix.options({
+        terser: {
+            terserOptions: {
+                compress: {
+                    drop_console: true
+                }
+            }
+        }
+    });
 
+    mix.version();
+}
 
 // Full API
 // mix.js(src, output);
