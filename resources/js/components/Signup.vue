@@ -119,7 +119,7 @@
                           <label for="poo">Proof of Ownership</label>
                           <div>
                             <div class="custom-file">
-                              <input type="file" class="custom-file-input"  ref="proofOfOwnership" @change="handleUploadForOwnership" id="poo" required>
+                              <input type="file" class="custom-file-input"  ref="proofOfOwnership" @change="handleUploadForOwnership" id="poo" required multiple accept="image/*,application/pdf">
                               <label class="custom-file-label" for="poo">Choose file</label>
                             </div>
                           </div>
@@ -132,7 +132,7 @@
                           <label for="por">Proof of Registry</label>
                           <div>
                             <div class="custom-file">
-                              <input type="file" class="custom-file-input" ref="proofOfRegistry" @change="handleUploadForRegistry" id="por"  required>
+                              <input type="file" class="custom-file-input" ref="proofOfRegistry" @change="handleUploadForRegistry" id="por"  required multiple accept="image/*,application/pdf">
                               <label class="custom-file-label" for="por">Choose file</label>
                             </div>
                           </div>
@@ -211,11 +211,11 @@
       },
       methods: {
         handleUploadForOwnership() {
-          this.poo = this.$refs.proofOfOwnership.files[0]
+          this.poo = this.$refs.proofOfOwnership.files
         },
 
         handleUploadForRegistry() {
-          this.por = this.$refs.proofOfRegistry.files[0]
+          this.por = this.$refs.proofOfRegistry.files
         },
 
         setBunkeringAsAccountType() {
@@ -244,8 +244,15 @@
           form_data.append('companyName', this.companyName)
           form_data.append('companyAddress', this.companyAddress)
           form_data.append('workTitle', this.workTitle)
-          form_data.append('poo', this.poo)
-          form_data.append('por', this.por)
+          for (let doc of this.poo) {
+            form_data.append('poo', doc)
+          }
+
+          for (let doc of this.por) {
+            form_data.append('por', doc)
+          }
+
+          // form_data.append('por', this.por)
           form_data.append('country', this.country)
           form_data.append('role', this.accountType)
           this.$store.dispatch('Signup/do_singup_request', form_data)
