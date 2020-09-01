@@ -22,6 +22,7 @@ import {
     faPhone
 } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+import VueCarousel from 'vue-carousel'
 
 library.add(
     faThumbsUp,
@@ -39,6 +40,7 @@ import 'vue-toast-notification/dist/theme-default.css'
 Vue.use(VueToast, {
     position: 'bottom'
 })
+Vue.use(VueCarousel)
 Vue.use(VueGoodTablePlugin)
 Vue.component('font-awesome-icon', FontAwesomeIcon)
 
