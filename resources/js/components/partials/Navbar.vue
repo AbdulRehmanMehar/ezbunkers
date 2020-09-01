@@ -19,6 +19,10 @@
                 </li>
 
                 <li class="nav-item">
+                    <router-link class="nav-link" :to="{name: 'admin-dashboard-update-password'}">Change Password</router-link>
+                </li>
+
+                <li class="nav-item">
                     <a href="#" class="nav-link" @click.prevent="logoutAdmin">Logout</a>
                 </li>
             </ul>
