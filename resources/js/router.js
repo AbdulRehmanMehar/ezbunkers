@@ -82,7 +82,7 @@ export default new VueRouter({
 
         {
             path: '/dashboard',
-            name: 'user-dashboard',
+            name: 'user-dash',
             beforeEnter: userGaurd,
             component: {
                 template: `
@@ -95,17 +95,37 @@ export default new VueRouter({
             },
 
             children: [
+
+                {
+                    path: '',
+                    name: 'user-dashboard',
+                    component: () => import('@/components/authenticated/Dashboard.vue')
+                },
+
                 {
                     path: 'set-password',
                     name: 'user-dashboard-set-password',
                     component: () => import('@/components/authenticated/AccountPassword.vue')
                 },
 
-                // {
-                //     path: 'home',
-                //     name: 'user-dashboard-home',
-                //     component: () => import('@/components/authenticated/AccountPassword.vue')
-                // }
+                {
+                    path: 'create-vessels',
+                    name: 'user-create-vessels',
+                    component: () => import('@/components/authenticated/AddVessel.vue')
+                },
+
+                {
+                    path: 'list-vessels',
+                    name: 'user-vessels-list',
+                    component: () => import('@/components/authenticated/VesselList.vue')
+                },
+
+                {
+                    path: 'update-profile',
+                    name: 'user-update-profile',
+                    component: () => import('@/components/authenticated/UpdateProfile.vue')
+                },
+
             ]
         },
 
@@ -139,6 +159,11 @@ export default new VueRouter({
                             path: '',
                             name: 'admin-dashboard',
                             component: () => import('@/components/admin/dashcomponents/DashboardIndex.vue')
+                        },
+                        {
+                            path: 'update-password',
+                            name: 'admin-dashboard-update-password',
+                            component: () => import('@/components/admin/dashcomponents/AccountPassword.vue')
                         },
                         {
                             path: 'accounts/:type?',
