@@ -3,7 +3,7 @@ const Schema = mongoose.Schema
 
 const AccountSchema = new Schema({
     uid: String,
-    type: String, // can be shipping, bunkering or admin
+    type: String, // can be shipping, bunkering
     name: String,
     email: String,
     password: String,
