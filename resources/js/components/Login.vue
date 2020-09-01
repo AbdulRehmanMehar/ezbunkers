@@ -30,7 +30,7 @@
 
                   <div class="form-group" v-if="seeUserIdAndSetOTPIfNeededResponseCode == 201">
                     <label for="inputOTP">One Time Password</label>
-                    <input type="text" v-model="otp" class="form-control" id="inputOTP" placeholder="*******" required>
+                    <input type="password" v-model="otp" class="form-control" id="inputOTP" placeholder="*******" required>
                     <small v-if="errors.length > 0 && errors.find(error => error.param == 'password')" class="form-text text-danger">
                       {{ errors.find(error => error.param == 'password').msg }}
                     </small>
@@ -38,7 +38,7 @@
 
                   <div class="form-group" v-else>
                     <label for="inputPassword">Password</label>
-                    <input type="text" v-model="password" class="form-control" id="inputPassword" placeholder="********" required>
+                    <input type="password" v-model="password" class="form-control" id="inputPassword" placeholder="********" required>
                     <small v-if="errors.length > 0 && errors.find(error => error.param == 'password')" class="form-text text-danger">
                       {{ errors.find(error => error.param == 'password').msg }}
                     </small>
