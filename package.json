@@ -57,6 +57,7 @@
     "socket.io": "^2.3.0",
     "uuid": "^8.3.0",
     "vue": "^2.6.11",
+    "vue-carousel": "^0.18.0",
     "vue-good-table": "^2.21.0",
     "vue-router": "^3.3.4",
     "vue-template-compiler": "^2.6.11",
