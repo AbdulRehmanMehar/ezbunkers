@@ -63,9 +63,10 @@ async (req, res) => {
 
 
     let account = await AccountModel.findOne({ uid: req.body.uid })
-
-    await OTPModel.findByIdAndDelete(account.otp._id)
-    await AccountModel.findOneAndUpdate({ uid: req.body.uid }, { $unset: {otp: account.otp._id} })
+    if (account.otp && account.otp._id) {
+        await OTPModel.findByIdAndDelete(account.otp._id)
+        await AccountModel.findOneAndUpdate({uid: req.body.uid}, {$unset: {otp: account.otp._id}})
+    }
 
 
     account = account.toObject()
@@ -146,6 +147,7 @@ multer(multerConf).fields([{ name: 'poo' }, { name: 'por' }]),
     }),
     check('phone').isMobilePhone().withMessage('Enter a valid phone number'),
     check('imo').isMobilePhone().withMessage('Enter a valid imo number'),
+    check('country').notEmpty().withMessage('Enter your country'),
     check('companyName').trim().escape().notEmpty().withMessage('Enter company name'),
     check('companyAddress').trim().escape().notEmpty().withMessage('Enter company address'),
     check('workTitle').trim().escape().notEmpty().withMessage('Enter work title'),
@@ -203,6 +205,7 @@ async (req, res) => {
             email: req.body.email,
             phone: req.body.phone,
             imo: req.body.imo,
+            companyCountry: req.body.country,
             companyName: req.body.companyName,
             companyAddress: req.body.companyAddress,
             workTitle: req.body.workTitle,
