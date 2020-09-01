@@ -17,7 +17,7 @@
 
             <div class="row justify-content-center my-4">
                 <div class="col-md-3">
-                    <div class="bg-image" :style="{'background-image': `url(${bg_image})`}">
+                    <div class="bg-image" :style="{'background-image': `url(/images/Shipping_LogisticsV2.jpg)`}">
                         <div class="badge bg-primary text-light p-2">
                             Verified
                         </div>
@@ -50,9 +50,15 @@
         name: "Listing",
         components: { Searchbar },
 
-        data() {
-            return {
-                bg_image: require('@/images/Shipping_LogisticsV2.jpg'),
+        created() {
+            this.$store.dispatch('Account/fetch_accounts')
+        },
+
+        computed: {
+            companies() {
+                let companies = this.$store.getters['Account/search_approved_accounts']('a', 'pakistan')
+                console.log(companies)
+                return companies
             }
         }
     }
