@@ -152,6 +152,7 @@ multer(multerConf).fields([{ name: 'poo' }, { name: 'por' }]),
     check('country').notEmpty().withMessage('Enter your country'),
     check('companyName').trim().escape().notEmpty().withMessage('Enter company name'),
     check('companyAddress').trim().escape().notEmpty().withMessage('Enter company address'),
+    check('companyDescription').trim().escape().notEmpty().withMessage('Enter company description'),
     check('workTitle').trim().escape().notEmpty().withMessage('Enter work title'),
     check('por').custom((value, { req }) => {
         if (req.files && req.files.por) {
@@ -208,6 +209,7 @@ async (req, res) => {
             imo: req.body.imo,
             companyCountry: req.body.country,
             companyName: req.body.companyName,
+            companyDescription: req.body.companyDescription,
             companyAddress: req.body.companyAddress,
             workTitle: req.body.workTitle,
             companyDocuments: companyDocs
