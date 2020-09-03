@@ -114,6 +114,14 @@
                         </small>
                       </div>
 
+                      <div class="form-group">
+                        <label for="inputCompany">Company Description</label>
+                        <textarea required id="inputCompany" v-model="companyDescription" rows="5" class="form-control" placeholder="Company Address"></textarea>
+                        <small v-if="errors.length > 0 && errors.find(error => error.param == 'companyDescription')" class="form-text text-danger">
+                          {{ errors.find(error => error.param == 'companyDescription').msg }}
+                        </small>
+                      </div>
+
                       <div class="form-row">
                         <div class="form-group col-md-6">
                           <label for="poo">Proof of Ownership</label>
@@ -182,6 +190,7 @@
           poo: null,
           por: null,
           accountType: null,
+          companyDescription: null,
         }
       },
       computed: {
@@ -243,6 +252,7 @@
           form_data.append('imo', this.imo)
           form_data.append('companyName', this.companyName)
           form_data.append('companyAddress', this.companyAddress)
+          form_data.append('companyDescription', this.companyDescription)
           form_data.append('workTitle', this.workTitle)
           for (let doc of this.poo) {
             form_data.append('poo', doc)

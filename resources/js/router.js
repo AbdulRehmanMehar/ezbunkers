@@ -121,12 +121,6 @@ export default new VueRouter({
                 },
 
                 {
-                    path: 'update-profile',
-                    name: 'user-update-profile',
-                    component: () => import('@/components/authenticated/UpdateProfile.vue')
-                },
-
-                {
                     path: 'company-documents',
                     name: 'company-documents',
                     component: () => import('@/components/authenticated/CompanyDocuments.vue')
