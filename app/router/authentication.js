@@ -1,4 +1,6 @@
 require('dotenv').config()
+const fs = require('fs')
+const path = require('path')
 const multer = require('multer')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
@@ -176,7 +178,6 @@ async (req, res) => {
 
     try {
         let pooDocs = [], porDocs = []
-        console.log()
         for (doc of req.files.poo) {
             let pooDoc = await new FileModel({
                 type: 'poo',
@@ -315,6 +316,144 @@ async (req, res) => {
         })
     }
 
+})
+
+
+router.post('/add-documents',
+authenticatedMiddleware,
+multer(multerConf).fields([{ name: 'documents' }]),
+[
+    check('fileType').notEmpty().withMessage('Sorry, You must choose document type.')
+],
+async (req, res) => {
+
+    try{
+        let documents = []
+        for (doc of req.files.documents) {
+            let pooDoc = await new FileModel({
+                type: req.body.fileType,
+                path: doc.destination + '/' + doc.filename,
+                ext: doc.originalname.split('.').pop()
+            }).save()
+            documents.push(pooDoc)
+        }
+
+        await AccountModel.findOneAndUpdate({email: req.account.email}, { $push: { companyDocuments: documents } })
+
+        return res.status(200).json({
+            data: {
+                documents
+            }
+        })
+    }catch (error) {
+        return res.status(500).json({
+            error
+        })
+    }
+
+})
+
+router.delete('/document/:id',
+authenticatedMiddleware,
+async (req, res) => {
+    try {
+
+        let document = await FileModel.findById(req.params.id)
+        let image = document.path
+
+        await AccountModel.findOneAndUpdate({email: req.account.email}, { $pull: { companyDocuments: req.params.id } })
+        await FileModel.findOneAndDelete(req.params.id)
+
+        fs.unlinkSync(path.dirname(require.main.filename) + '/' + image)
+
+        return res.status(200).json({
+            message: 'Done!'
+        })
+
+    } catch (error) {
+        return res.status(500).json({
+            error
+        })
+    }
+})
+
+
+
+router.post('/add-images',
+authenticatedMiddleware,
+multer(multerConf).fields([{ name: 'logo', length: 1 }, { name: 'banner' }]),
+[
+    check('fileType').notEmpty().withMessage('Sorry, You must choose image type.')
+],
+async (req, res) => {
+
+        try{
+            if (req.files) {
+                let images = []
+
+                if (req.files.logo) {
+                    let logo = await new FileModel({
+                        type: 'logo',
+                        path: req.files.logo[0].destination + '/' + req.files.logo[0].filename,
+                        ext: req.files.logo[0].originalname.split('.').pop()
+                    }).save()
+
+                    images.push(logo)
+                }
+
+                if (req.files.banner) {
+                    for (doc of req.files.banner) {
+                        let banner = await new FileModel({
+                            type: 'banner',
+                            path: doc.destination + '/' + doc.filename,
+                            ext: doc.originalname.split('.').pop()
+                        }).save()
+                        images.push(banner)
+                    }
+                }
+
+                await AccountModel.findOneAndUpdate({email: req.account.email}, {$push: {companyImages: images}})
+
+                return res.status(200).json({
+                    data: {
+                        images
+                    }
+                })
+            }
+            return res.status(204).json({
+                message: 'Nothing changed!'
+            })
+        }catch (error) {
+            return res.status(500).json({
+                error
+            })
+        }
+
+    })
+
+
+router.delete('/image/:id',
+authenticatedMiddleware,
+async (req, res) => {
+    try {
+
+        let document = await FileModel.findById(req.params.id)
+        let image = document.path
+
+        await AccountModel.findOneAndUpdate({email: req.account.email}, { $pull: { companyImages: req.params.id } })
+        await FileModel.findOneAndDelete(req.params.id)
+
+        fs.unlinkSync(path.dirname(require.main.filename) + '/' + image)
+
+        return res.status(200).json({
+            message: 'Done!'
+        })
+
+    } catch (error) {
+        return res.status(500).json({
+            error
+        })
+    }
 })
 
 
