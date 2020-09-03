@@ -13,7 +13,7 @@
           </div>
 
           <div class="form-group">
-            <label for="fuels">Description</label>
+            <label for="fuels">Fuels</label>
             <select class="custom-select form-control" v-model="fuels" id="fuels" multiple>
               <option v-for="fuel in fuelList" :value="fuel._id">{{ fuel.name }}</option>
             </select>
