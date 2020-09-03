@@ -7,7 +7,8 @@
         <p>See or Edit your Profile</p>
         <div style="float: right">
           <router-link :to="{ name: 'user-update-profile' }" class="btn btn-info my-1">Update Profile</router-link>
-<!--          <router-link :to="{ name: 'admin-dashboard-accounts', params: { type: 'all' } }" class="btn btn-success my-1">See All Accounts</router-link>-->
+          <router-link :to="{ name: 'company-documents', params: { type: 'all' } }" class="btn btn-success my-1">Company Documents</router-link>
+          <router-link :to="{ name: 'company-images', params: { type: 'all' } }" class="btn btn-success my-1">Company Images</router-link>
         </div>
       </div>
     </div>
