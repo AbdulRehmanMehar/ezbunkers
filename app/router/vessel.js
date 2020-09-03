@@ -1,4 +1,5 @@
 const fs = require('fs')
+const path = require('path')
 const multer = require('multer')
 const { v4: uuidv4 } = require('uuid')
 const router = require('express').Router()
@@ -91,8 +92,14 @@ router.delete('/:id',
 async (req, res) => {
     try {
 
+        let vessel = await VesselModel.findById(req.params.id)
+        let image = vessel.image.path
         await AccountModel.findOneAndUpdate({email: req.account.email}, { $pull: { vessels: req.params.id } })
         await VesselModel.findOneAndDelete(req.params.id)
+
+        fs.unlinkSync(path.dirname(require.main.filename) + '/' + image)
+
+        console.log(path.dirname(require.main.filename) + '/' + image)
 
         return res.status(200).json({
             message: 'Done!'
