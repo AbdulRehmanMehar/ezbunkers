@@ -1,10 +1,13 @@
+const fs = require('fs')
 const multer = require('multer')
 
 module.exports = {
     storage: multer.diskStorage({
         destination: (req, file, next) => {
             // if (err) console.log(err)
-            next(null, 'app/uploads/' + file.fieldname)
+            const path = 'app/uploads/' + req.body.fileType || file.fieldname
+            fs.mkdirSync(path, { recursive: true })
+            next(null, path)
         },
         filename: (req, file, next) => {
             const ext = file.originalname.split('.').pop()
