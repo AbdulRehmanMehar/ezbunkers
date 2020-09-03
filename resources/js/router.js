@@ -126,6 +126,18 @@ export default new VueRouter({
                     component: () => import('@/components/authenticated/UpdateProfile.vue')
                 },
 
+                {
+                    path: 'company-documents',
+                    name: 'company-documents',
+                    component: () => import('@/components/authenticated/CompanyDocuments.vue')
+                },
+
+                {
+                    path: 'company-images',
+                    name: 'company-images',
+                    component: () => import('@/components/authenticated/CompanyImages.vue')
+                },
+
             ]
         },
 
