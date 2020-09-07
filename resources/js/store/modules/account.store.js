@@ -96,8 +96,25 @@ const getters = {
     approved_accounts: (state) => state.accounts.filter(account => account.uid != undefined),
     accounts_needing_approval: (state) => state.accounts.filter(account => account.uid == undefined),
     search_approved_accounts: (state, getters) => (fuel, location) => {
+        console.log('vuex', fuel, location)
         return getters.approved_accounts.filter(account => {
-            return !!account.vessels.filter(vessel => vessel.fuel.findIndex(fuel) != -1) && account.country.toLocaleLowerCase() == location.toLocaleLowerCase();
+            return (
+                (
+                    account.vessels &&
+                    account.vessels.some(
+                        vessel => vessel.name.toLowerCase() == fuel.toLowerCase() ||
+                        (
+                            vessel.fuel &&
+                            vessel.fuel.findIndex(
+                            f => f.name.toLowerCase() == fuel.toLowerCase()) != -1)
+                        )
+                ) ||
+
+                (
+                    account.country &&
+                    account.country.toLowerCase() == location.toLowerCase()
+                )
+            )
         })
     }
 }
