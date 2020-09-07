@@ -69,7 +69,7 @@ export default new VueRouter({
             component: () => import('@/components/Login.vue')
         },
         {
-            path: '/listing',
+            path: '/listing/:location?/:fuel?',
             name: 'listing',
             component: () => import('@/components/Listing.vue')
         },
