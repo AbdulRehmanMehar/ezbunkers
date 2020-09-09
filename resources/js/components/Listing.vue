@@ -41,7 +41,7 @@
                 <div class="col-lg-4 col-md-7 col-sm-12">
                     <div class="mt-4 mt-md-0 mt-lg-0">
                         <h4 class="font-weight-normal mb-2">
-                          <router-link class="text-dark text-decoration-none" :to="{name: 'home'}">{{ company.companyName }}</router-link>
+                          <router-link class="text-dark text-decoration-none" :to="{name: 'profile', params: { id: company._id }}">{{ company.companyName }}</router-link>
                         </h4>
                         <h6 class="font-weight-lighter text-14">{{ company.country }}</h6>
 
