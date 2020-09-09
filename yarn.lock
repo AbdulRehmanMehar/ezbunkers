@@ -2765,6 +2765,11 @@ cosmiconfig@^5.0.0:
     js-yaml "^3.13.1"
     parse-json "^4.0.0"
 
+country-list@^2.2.0:
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/country-list/-/country-list-2.2.0.tgz#e248338cafb97b2d86cf0784a25dceb4d52054d1"
+  integrity sha512-AS21pllCp72LmUztqXPVKXK3TRyap1XlohGLqN04cXH2rFB9vo7SnH5sMnqltZPnu9ie/x1se3UuCZJbGXErfw==
+
 create-ecdh@^4.0.0:
   version "4.0.3"
   resolved "https://registry.yarnpkg.com/create-ecdh/-/create-ecdh-4.0.3.tgz#c9111b6f33045c4697f144787f9254cdc77c45ff"
@@ -9572,6 +9577,11 @@ vue-carousel@^0.18.0:
     global "^4.3.2"
     regenerator-runtime "^0.12.1"
     vue "^2.5.17"
+
+vue-country-flag@^2.0.1:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/vue-country-flag/-/vue-country-flag-2.0.1.tgz#b5b9c2092284dbcb793deee690ae12a13571f6fe"
+  integrity sha512-an33mrPd6v48oxgFWlYD+QPOUNWWwovyyOpUHwOa8y5xx+NalehYmloDdCyIqnEqPJC2/i6c33G68RqrvC6BQQ==
 
 vue-good-table@^2.21.0:
   version "2.21.0"
