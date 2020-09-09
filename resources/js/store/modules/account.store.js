@@ -116,8 +116,12 @@ const getters = {
                 )
             )
         })
+    },
+    getAccountById: (state, getters) => (id) => {
+        return getters.approved_accounts.find(account => account._id == id)
     }
 }
+
 
 export default {
     namespaced: true,
