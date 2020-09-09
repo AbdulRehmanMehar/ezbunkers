@@ -23,6 +23,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import VueCarousel from 'vue-carousel'
+import CountryFlag from 'vue-country-flag'
 
 library.add(
     faThumbsUp,
@@ -43,6 +44,7 @@ Vue.use(VueToast, {
 Vue.use(VueCarousel)
 Vue.use(VueGoodTablePlugin)
 Vue.component('font-awesome-icon', FontAwesomeIcon)
+Vue.component('country-flag', CountryFlag)
 
 Vue.config.productionTip = false
 
