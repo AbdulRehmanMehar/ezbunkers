@@ -74,6 +74,30 @@ export default new VueRouter({
             component: () => import('@/components/Listing.vue')
         },
         {
+            path: '/profile/:id',
+            name: 'profile-view',
+            component: () => import('@/components/Profile.vue'),
+            children: [
+                {
+                    path: 'home',
+                    name: 'profile',
+                    component: () => import('@/components/partials/ProfileHome.vue'),
+                },
+
+                {
+                    path: 'vessels',
+                    name: 'vessels',
+                    component: () => import('@/components/partials/Vessels.vue'),
+                },
+
+                {
+                    path: 'nominate-order/:vesselId?',
+                    name: 'nominate-order',
+                    component: () => import('@/components/partials/NominateOrder.vue'),
+                },
+            ]
+        },
+        {
             path: '/how-it-works',
             name: 'how-it-works',
             component: () => import('@/components/HowItWorks.vue')
