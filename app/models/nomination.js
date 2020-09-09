@@ -13,14 +13,13 @@ const NominationSchema = new Schema({
         autopopulate: true
     },
     buyerEmail: String,
-    fuelType: [
+    fuels: [
         {
             type: mongoose.Schema.Types.ObjectId,
-            ref: 'Fuel',
+            ref: 'NominationFuelQuantity',
             autopopulate: true
         }
     ],
-    fuelQuantity: Number,
     vesselId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Vessel',
