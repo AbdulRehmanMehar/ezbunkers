@@ -3,13 +3,14 @@ const FuelModel = require('../models/fuel')
 const VesselModel = require('../models/vessel')
 const AccountModel = require('../models/account')
 const NominationModel = require('../models/nomination')
+const NominationFuelQuantityModel = require('../models/NominationFuelQuantity')
 const { check, validationResult } = require('express-validator')
 const authenticatedMiddleware = require('../middlewares/authenticated')
 
 router.use(authenticatedMiddleware)
 
 
-router.get('/',
+router.post('/',
 [
     check('sellerId').custom(async (value) => {
         let seller = await AccountModel.findById(value)
@@ -19,28 +20,7 @@ router.get('/',
         }
         throw new Error('Invalid Seller Id')
     }),
-    check('buyerEmail').isEmail().withMessage('Provide a valid email'),
-    check('fuelType').custom(async (value) => {
-        let flag = false
-        for (val in value) {
-            let fuel = await FuelModel.findById(val)
 
-            if (fuel) {
-                flag = true
-            } else {
-                flag = false
-                break
-            }
-        }
-
-        if (flag) {
-            return true
-        }
-
-        throw new Error('Something went wrong with Fuel Type')
-    }),
-
-    check('fuelQuantity').isNumeric().withMessage('Enter valid Fuel Quantity'),
     check('vesselId').custom(async (value) => {
         let vessel = await VesselModel.findById(value)
 
@@ -50,6 +30,7 @@ router.get('/',
 
         throw new Error('Something went wrong with Vessel')
     }),
+    check('fuelQuantities').notEmpty().withMessage('Something is wrong with fuel quantity'),
     check('vesselSize').isNumeric().withMessage('Enter valid Vessel Size'),
     check('price').isNumeric().withMessage('Enter valid price'),
     check('destination').trim().escape().notEmpty().withMessage('Enter valid destination'),
@@ -65,13 +46,30 @@ async (req, res) => {
 
     try {
 
+        console.log(req.body.fuelQuantities)
+
+        let fuel_ids = []
+
+        for (let fuel of req.body.fuelQuantities) {
+            let fuelQuantity = await NominationFuelQuantityModel({
+                fuel: fuel.id,
+                quantity: fuel.quantity
+            }).save()
+
+            fuel_ids.push(fuelQuantity)
+        }
+
+        let buyer = await AccountModel.find({ email: req.account.email })
+
+        console.log(buyer, fuel_ids)
+
+
         let nomination = await NominationModel({
             sellerId: req.body.sellerId,
-            buyerId: req.account._id,
-            buyerEmail: req.body.buyerEmail,
-            fuelType: req.body.fuelType,
-            fuelQuantity: req.body.fuelQuantity,
+            buyerId: buyer._id,
+            buyerEmail: buyer.buyerEmail,
             vesselId: req.body.vesselId,
+            fuels: fuel_ids,
             vesselSize: req.body.vesselSize,
             price: req.body.price,
             destination: req.body.destination
