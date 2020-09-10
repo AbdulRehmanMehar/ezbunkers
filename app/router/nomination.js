@@ -45,9 +45,6 @@ async (req, res) => {
     }
 
     try {
-
-        console.log(req.body.fuelQuantities)
-
         let fuel_ids = []
 
         for (let fuel of req.body.fuelQuantities) {
@@ -59,16 +56,12 @@ async (req, res) => {
             fuel_ids.push(fuelQuantity)
         }
 
-        let buyer = await AccountModel.find({ email: req.account.email })
-
-        console.log(buyer, fuel_ids)
+        let buyer = await AccountModel.findOne({ email: req.account.email })
 
 
         let nomination = await NominationModel({
-            sellerId: req.body.sellerId,
-            buyerId: buyer._id,
-            buyerEmail: buyer.buyerEmail,
-            vesselId: req.body.vesselId,
+            nominator: buyer,
+            vessel: req.body.vesselId,
             fuels: fuel_ids,
             vesselSize: req.body.vesselSize,
             price: req.body.price,
