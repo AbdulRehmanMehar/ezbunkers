@@ -66,10 +66,13 @@ async (req, res) => {
             fuels.push(fuel)
         }
 
+        let acc = await AccountModel.findOne({ email: req.account.email })
+
         let vessel = await VesselModel({
             name: req.body.name,
             image: image,
-            fuel: fuels
+            fuel: fuels,
+            owner: acc
         }).save()
 
         await AccountModel.findOneAndUpdate({email: req.account.email}, { $push: { vessels: vessel } })
