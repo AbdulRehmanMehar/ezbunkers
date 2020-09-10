@@ -48,7 +48,7 @@
                         <p class="text-grey text-12 mt-3">{{ company.companyDescription.slice(0, 220) }}...</p>
 
                         <p class="text-primary">
-                            <router-link :to="{ name: 'home' }" class="d-inline-block mr-4" v-for="vessel of company.vessels" :key="vessel._id">
+                            <router-link :to="{ name: 'nominate-order', params: { id: company._id, vesselId: vessel._id } }" class="d-inline-block mr-4" v-for="vessel of company.vessels" :key="vessel._id">
                                 {{ vessel.name }}
                             </router-link>
                         </p>
