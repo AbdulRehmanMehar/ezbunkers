@@ -15,6 +15,12 @@ const VesselSchema = new Schema({
             autopopulate: true
         }
     ],
+
+    owner: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Account',
+        autopopulate: true
+    }
 })
 
 VesselSchema.plugin(require('mongoose-autopopulate'))
