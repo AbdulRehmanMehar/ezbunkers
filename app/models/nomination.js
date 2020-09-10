@@ -2,17 +2,11 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
 const NominationSchema = new Schema({
-    sellerId: {
-        type:  mongoose.Schema.Types.ObjectId,
+    nominator: {
+        type:  Schema.Types.ObjectId,
         ref: 'Account',
         autopopulate: true
     },
-    buyerId: {
-        type:  mongoose.Schema.Types.ObjectId,
-        ref: 'Account',
-        autopopulate: true
-    },
-    buyerEmail: String,
     fuels: [
         {
             type: mongoose.Schema.Types.ObjectId,
@@ -20,7 +14,7 @@ const NominationSchema = new Schema({
             autopopulate: true
         }
     ],
-    vesselId: {
+    vessel: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Vessel',
         autopopulate: true
