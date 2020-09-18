@@ -1,10 +1,10 @@
 require('dotenv').config()
-const path = require('path')
 const cors = require('cors')
 const http = require('http')
 const morgan = require('morgan')
 const express = require('express')
 const mongoose = require('mongoose')
+const io = require('./app/config/io')
 const ApiRouter = require('./app/router')
 const bodyParser = require('body-parser')
 
@@ -23,6 +23,8 @@ app.use(express.static('public'))
 app.use('/uploads', express.static(__dirname + '/app/uploads'))
 
 app.use('/api', ApiRouter)
+
+io(server)
 
 server.listen(process.env.PORT)
 
