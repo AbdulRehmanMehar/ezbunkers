@@ -156,6 +156,12 @@ export default new VueRouter({
                     component: () => import('@/components/authenticated/CompanyImages.vue')
                 },
 
+                {
+                    path: 'chat/:user?',
+                    name: 'chat',
+                    component: () => import('@/components/authenticated/Chat.vue')
+                },
+
             ]
         },
 
