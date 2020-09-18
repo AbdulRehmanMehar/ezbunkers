@@ -37,6 +37,10 @@
                 </li>
 
                 <li class="nav-item">
+                  <router-link class="nav-link" :to="{name: 'chat'}">Messages</router-link>
+                </li>
+
+                <li class="nav-item">
                   <a href="#" class="nav-link" @click.prevent="logoutStandardAccount">Logout</a>
                 </li>
               </ul>
