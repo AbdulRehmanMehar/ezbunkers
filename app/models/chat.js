@@ -18,7 +18,7 @@ const ChatSchema = new Schema({
         type: Date,
         default: Date.now()
     }
-})
+}, { timestamps: true })
 
 ChatSchema.plugin(require('mongoose-autopopulate'))
 
