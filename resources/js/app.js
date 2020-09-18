@@ -19,11 +19,16 @@ import {
     faSearch,
     faGlobeAmericas,
     faSms,
-    faPhone
+    faPhone,
+    faPaperPlane,
+    faEnvelopeOpen,
+    faSpinner
 } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import VueCarousel from 'vue-carousel'
 import CountryFlag from 'vue-country-flag'
+import VueSocketIOExt from 'vue-socket.io-extended'
+import io from 'socket.io-client'
 
 library.add(
     faThumbsUp,
@@ -32,7 +37,10 @@ library.add(
     faSearch,
     faGlobeAmericas,
     faSms,
-    faPhone
+    faPhone,
+    faPaperPlane,
+    faEnvelopeOpen,
+    faSpinner
 )
 
 import 'vue-good-table/dist/vue-good-table.css'
@@ -47,6 +55,18 @@ Vue.component('font-awesome-icon', FontAwesomeIcon)
 Vue.component('country-flag', CountryFlag)
 
 Vue.config.productionTip = false
+
+let account = JSON.parse(localStorage.getItem('user-account'))
+
+if (account != null) {
+    const socket = io('/', {
+        query: { token: account.token }
+    })
+    socket.emit('message', 'hey')
+    Vue.use(VueSocketIOExt, socket, { store })
+}
+
+
 
 new Vue({
     store,
