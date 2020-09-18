@@ -22,7 +22,7 @@ const NominationSchema = new Schema({
     vesselSize: Number,
     price: Number,
     destination: String,
-})
+}, { timestamps: true })
 
 NominationSchema.plugin(require('mongoose-autopopulate'))
 
