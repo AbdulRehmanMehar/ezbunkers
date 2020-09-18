@@ -39,7 +39,7 @@ const actions = {
                     commit('SET_LOADING', false)
                     commit('SET_SUCCESS', true)
                     console.log(resp)
-                    resolve(resp)
+                    resolve(resp.data.data.nomination)
                 })
                 .catch(error => {
                     commit('SET_LOADING', false)
@@ -56,7 +56,6 @@ const getters = {
     errors: (state) => state.errors,
     loading: (state) => state.loading,
     success: (state) => state.success,
-    fuels: (state) => state.fuels,
 }
 
 export default {
