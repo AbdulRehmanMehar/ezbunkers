@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="container bg-white">
+    <div v-if="!loading" class="container bg-white">
       <div class=" p-4">
         <h3 class="mb-4">Nominate Order</h3>
         <form @submit.prevent="submit">
@@ -36,16 +36,24 @@
             </div>
           </div>
 
-          <button type="submit" class="btn btn-dark form-control">Nominate</button>
+          <button type="submit" class="btn btn-dark form-control" :disabled="currentUser.uid == company.uid">Nominate</button>
         </form>
       </div>
+    </div>
+
+    <div v-else>
+      <Loading />
+      <h1 class="mt-4 text-center">Processing</h1>
     </div>
   </div>
 </template>
 
 <script>
+import Loading from "@/components/partials/Loading"
+
 export default {
   name: "NominateOrder",
+  components: { Loading },
 
   data() {
     return {
@@ -57,6 +65,10 @@ export default {
   },
 
   computed: {
+    currentUser() {
+      return this.$store.getters['Login/account']
+    },
+
     company() {
       const { id } = this.$route.params
       if (id) {
@@ -80,7 +92,19 @@ export default {
         return v
       }
       return null
-    }
+    },
+
+    loading() {
+      return this.$store.getters['Orders/loading']
+    },
+
+    errors() {
+      return this.$store.getters['Orders/errors']
+    },
+
+    success() {
+      return this.$store.getters['Orders/success']
+    },
   },
 
   methods: {
@@ -105,7 +129,22 @@ export default {
       }
 
       this.$store.dispatch('Orders/nominate', data)
+        .then(order => {
+          let msg = `Order ID: ${order._id} <br>
+                  Company Name: ${order.nominator.companyName} <br>
+                    Fuel Type & Quantity: ${order.fuels.map(fuel => `${fuel.fuel.name}: ${fuel.quantity}, `)} <br>
+                    Vessel Type: ${order.vessel.name} <br>
+                     Vessel Size: ${order.vesselSize} <br>
+                       Price: ${order.price} <br>
+                        Destination: ${order.destination}`
 
+          this.$socket.client.emit('message', {
+            message: msg,
+            receiver: this.$route.params.id
+          })
+          this.$router.push({ name: 'chat', params: { user: this.$route.params.id } })
+          this.$toast.success('Success! Order is Nominated!')
+        })
     }
   }
 }
