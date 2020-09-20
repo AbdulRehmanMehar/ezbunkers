@@ -1,10 +1,12 @@
 import axios from 'axios'
+import Vue from "vue";
 
 
 const state = {
     loading: false,
     errors: null,
-    success: false
+    success: false,
+    orders: null
 }
 
 const mutations = {
@@ -19,6 +21,20 @@ const mutations = {
     SET_SUCCESS(state, payload) {
         state.success = payload
     },
+
+    SET_ORDERS(state, payload) {
+        state.orders = payload
+    },
+
+    UPDATE_ORDER(state, payload) {
+
+        for (let i=0; i < state.orders.length; i++) {
+            if (state.orders[i]._id == payload._id) {
+                state.orders[i].status = payload.status
+                Vue.set(state.orders, i, state.orders[i])
+            }
+        }
+    }
 
 }
 
@@ -50,12 +66,84 @@ const actions = {
         })
     },
 
+    getOrders({ commit, rootState, rootGetters }) {
+        return new Promise((resolve, reject) =>  {
+            commit('SET_LOADING', true)
+            commit('SET_SUCCESS', false)
+            commit('SET_ERRORS', null)
+            console.log(rootGetters['Login/account'].token)
+            axios.get('/api/nomination/orders', {
+                headers: {
+                    authorization: rootGetters['Login/account'].token
+                }
+            }).then(resp => {
+                console.log(resp)
+                let current_user = rootGetters['Login/account']
+                let orders = []
+                let results = resp.data.data.orders
+
+                console.log(current_user)
+
+                for (let result of results) {
+                    if (result.vessel.owner.uid == current_user.uid) {
+                        orders.push(result)
+                    }
+                }
+
+                commit('SET_LOADING', false)
+                commit('SET_SUCCESS', true)
+                commit('SET_ORDERS', orders)
+                resolve(resp)
+            }).catch(error => {
+                console.log(error)
+                commit('SET_LOADING', false)
+                commit('SET_ERRORS', error)
+                reject(error)
+            })
+
+        })
+    },
+
+
+    patchOrder({ commit, rootState, rootGetters }, data) {
+
+        return new Promise((resolve, reject) => {
+            commit('SET_LOADING', true)
+            commit('SET_SUCCESS', false)
+            commit('SET_ERRORS', null)
+
+            axios.patch('/api/nomination', data, {
+                headers: {
+                    authorization: rootGetters['Login/account'].token
+                }
+            })
+                .then(resp => {
+                    let update;
+                    commit('SET_LOADING', false)
+                    commit('SET_SUCCESS', true)
+
+                    update = resp.data.data.resp
+                    update._id = data.id
+                    console.log(update)
+                    commit('UPDATE_ORDER', update)
+                    resolve(resp.data.data)
+                })
+                .catch(error => {
+                    commit('SET_LOADING', false)
+                    commit('SET_ERRORS', error)
+                    reject(error)
+                })
+
+        })
+    }
+
 }
 
 const getters = {
     errors: (state) => state.errors,
     loading: (state) => state.loading,
     success: (state) => state.success,
+    orders: (state) => state.orders,
 }
 
 export default {
