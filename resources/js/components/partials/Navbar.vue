@@ -37,7 +37,10 @@
                 </li>
 
                 <li class="nav-item">
-                  <router-link class="nav-link" :to="{name: 'chat'}">Messages</router-link>
+                  <router-link class="nav-link" :to="{name: 'chat'}">
+                    Messages
+                    <span v-if="this.socketIoMessagesLength > 0" class="badge badge-info">  &nbsp; {{ this.socketIoMessagesLength }}</span>
+                  </router-link>
                 </li>
 
                 <li class="nav-item">
@@ -76,6 +79,10 @@
           standardAccount() {
             return this.$store.getters['Login/account']
           },
+
+          socketIoMessagesLength() {
+            return this.$store.getters['SocketIo/totalMessages']
+          }
         },
 
         methods: {
