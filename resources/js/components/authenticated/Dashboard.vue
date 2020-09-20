@@ -23,6 +23,17 @@
       </div>
     </div>
 
+
+    <div class="card my-5">
+      <div class="card-body py-4">
+        <h1>Orders</h1>
+        <p>See your Orders</p>
+        <div style="float: right">
+          <router-link :to="{ name: 'orders-list' }" class="btn btn-success">Show Orders</router-link>
+        </div>
+      </div>
+    </div>
+
   </div>
 </template>
 
