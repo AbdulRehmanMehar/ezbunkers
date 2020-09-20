@@ -25,7 +25,6 @@ module.exports = (server) => {
             const token = socket.handshake.query.token
             await jwt.verify(token, process.env.APP_SECRET,  async (error, payload) => {
                 if (error) return next(new Error("Socket.io Authentication Error."))
-                console.log(payload)
                 let user = await AccountModel.findOne({ uid: payload.uid })
                 if (user) {
                     socket.request.user = user
@@ -58,7 +57,6 @@ module.exports = (server) => {
             try {
                 let participants = []
 
-                console.log(socket.request.user._id)
                 let results = await ChatModel.find({
                     $or: [
                         {sender: socket.request.user._id},
@@ -117,7 +115,7 @@ module.exports = (server) => {
         socket.on('message', async (data) => {
             if (data.message && data.receiver && socket.request.user._id != data.receiver) {
                 try {
-                    console.log(users)
+
                     let user = users.filter((user) => user._id == data.receiver)[0]
 
                     let message = await ChatModel({
@@ -126,12 +124,12 @@ module.exports = (server) => {
                         receiver: data.receiver
                     }).save()
 
-                    console.log(user)
+
                     if (user) {
                         io.sockets.to(user.sock).emit('message', message)
 
                     } else {
-                        console.log(message)
+
                         messages.push(message)
                     }
 
