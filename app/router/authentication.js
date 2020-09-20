@@ -73,10 +73,11 @@ async (req, res) => {
 
     account = account.toObject()
     delete account.password
-    delete account._id
     delete account._v
 
-    const token = jwt.sign(account, process.env.APP_SECRET)
+    let dataForToken = {_id: account._id, uid: account.uid, email: account.email}
+
+    const token = jwt.sign(dataForToken, process.env.APP_SECRET)
     account.token = token
 
     return res.status(200).json({
