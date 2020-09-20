@@ -22,6 +22,10 @@ const NominationSchema = new Schema({
     vesselSize: Number,
     price: Number,
     destination: String,
+    status: {
+        type: String,
+        default: 'placed'
+    }
 }, { timestamps: true })
 
 NominationSchema.plugin(require('mongoose-autopopulate'))
