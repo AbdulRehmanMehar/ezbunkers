@@ -162,6 +162,12 @@ export default new VueRouter({
                     component: () => import('@/components/authenticated/Chat.vue')
                 },
 
+                {
+                    path: 'list-orders',
+                    name: 'orders-list',
+                    component: () => import('@/components/authenticated/Orders.vue')
+                },
+
             ]
         },
 
