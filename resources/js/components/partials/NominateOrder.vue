@@ -135,7 +135,7 @@ export default {
                     Fuel Type & Quantity: ${order.fuels.map(fuel => `${fuel.fuel.name}: ${fuel.quantity}, `)} <br>
                     Vessel Type: ${order.vessel.name} <br>
                      Vessel Size: ${order.vesselSize} <br>
-                       Price: ${order.price} <br>
+                       Price: ${order.price} USD<br>
                         Destination: ${order.destination}`
 
           this.$socket.client.emit('message', {
