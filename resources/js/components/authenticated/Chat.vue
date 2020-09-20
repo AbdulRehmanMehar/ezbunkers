@@ -22,6 +22,9 @@
               <li v-for="participant of participants" @click.prevent="navigateToLoadConversation($event)" :key="participant._id">
                 <div class="bg-image" :style="{'background-image': `url('${participant.companyImages.filter(img => img.type == 'logo')[0] ? participant.companyImages.filter(img => img.type == 'logo')[0].path.slice(3, participant.companyImages.filter(img => img.type == 'logo')[0].path.length): '/images/ezbunk.0caa7f64.png'}')`}"></div>
                 <router-link :to="{name: 'chat', params: { user: participant._id }}" class="text-dark router-link text-decoration-none">{{ participant.companyName }}</router-link>
+                <span class="badge badge-info" style="position: absolute; right: 0; margin-right: 40px; top: 30px;" v-if="socketIoMessagesForSenderLength(participant._id) > 0">
+                  {{ socketIoMessagesForSenderLength(participant._id) }}
+                </span>
               </li>
             </ul>
           </div>
@@ -83,12 +86,13 @@ export default {
     }
   },
 
-  created() {
+  mounted() {
     this.$socket.client.emit('participants')
 
     const { user } = this.$route.params
     if (user) {
       this.loadConversationEmission(user)
+      this.socketIoRemoveMessagesForOpenedConversationOfSender(user)
     }
   },
 
@@ -102,7 +106,10 @@ export default {
 
   watch: {
     '$route.params.user': function (user) {
-      this.loadConversationEmission(user)
+      if (user) {
+        this.loadConversationEmission(user)
+        this.socketIoRemoveMessagesForOpenedConversationOfSender(user)
+      }
     }
   },
 
@@ -113,7 +120,7 @@ export default {
         return this.participants.filter(participant => participant._id == user)[0]
       }
       return null
-    }
+    },
   },
 
   sockets: {
@@ -130,7 +137,8 @@ export default {
     },
 
     message(data) {
-      this.conversation.push(data)
+      if (this.conversation)
+        this.conversation.push(data)
     }
   },
 
@@ -163,6 +171,14 @@ export default {
 
         this.message = null
       }
+    },
+
+    socketIoMessagesForSenderLength(senderId) {
+      return this.$store.getters['SocketIo/totalMessagesBySenderId'](senderId)
+    },
+
+    socketIoRemoveMessagesForOpenedConversationOfSender(senderId) {
+      this.$store.dispatch('SocketIo/removeMessagesBySenderId', senderId)
     }
   }
 
