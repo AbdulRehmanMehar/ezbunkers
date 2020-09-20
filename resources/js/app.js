@@ -62,7 +62,6 @@ if (account != null) {
     const socket = io('/', {
         query: { token: account.token }
     })
-    socket.emit('message', 'hey')
     Vue.use(VueSocketIOExt, socket, { store })
 }
 
