@@ -2,7 +2,17 @@ const jwt = require('jsonwebtoken')
 const socketIO = require('socket.io')
 const ChatModel = require('../models/chat')
 const AccountModel = require('../models/account')
+const mailer = require('../config/mails')
+const youReceivedAMessage = require('../config/mails/templates/you-received-a-message')
 
+function diff_minutes(dt2, dt1)
+{
+
+    let diff =(dt2.getTime() - dt1.getTime()) / 1000;
+    diff /= 60;
+    return Math.abs(Math.round(diff));
+
+}
 
 module.exports = (server) => {
     let users = []
@@ -33,7 +43,7 @@ module.exports = (server) => {
         users.push({ sock: socket.id, _id: socket.request.user._id })
 
         messages = messages.filter((message) => {
-            let user = users.find(user => user._id == message.receiver)
+            let user = users.filter(user => user._id == message.receiver._id)[0]
 
             if (user) {
                 io.sockets.to(user.sock).emit(message)
@@ -107,26 +117,24 @@ module.exports = (server) => {
         socket.on('message', async (data) => {
             if (data.message && data.receiver && socket.request.user._id != data.receiver) {
                 try {
-
                     console.log(users)
+                    let user = users.filter((user) => user._id == data.receiver)[0]
 
-                    let user = users.find((user) => user._id == data.receiver)
-
-
-
-                    console.log('user', user)
                     let message = await ChatModel({
                         message: data.message,
                         sender: socket.request.user._id,
                         receiver: data.receiver
                     }).save()
 
+                    console.log(user)
                     if (user) {
                         io.sockets.to(user.sock).emit('message', message)
-                        console.log(user.sock)
+
                     } else {
+                        console.log(message)
                         messages.push(message)
                     }
+
                     socket.emit('message', message)
 
                 } catch (error) {
@@ -140,9 +148,22 @@ module.exports = (server) => {
 
         socket.on('disconnect', () => {
             users = users.filter(
-                user => user.sock !== socket.id
+                user => user.sock != socket.id
             )
         })
 
     })
+
+    setInterval(async () => {
+        for (let message of messages) {
+            if (diff_minutes(message.date, new Date()) >= 10) {
+                let messageArr = messages.filter(msg => msg.receiver._id == message.receiver._id)
+                    .map(msg => msg ? msg.message : null)
+
+                await mailer(message.receiver.email, 'You received a message', youReceivedAMessage(message.receiver.name, message.sender.companyName, messageArr))
+
+                messages = messages.filter(msg => msg.receiver._id != message.receiver._id)
+            }
+        }
+    }, 900000) //runs every 15mins
 }
