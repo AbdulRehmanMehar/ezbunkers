@@ -1,4 +1,5 @@
 const router = require('express').Router()
+const mailer = require('../config/mails')
 const FuelModel = require('../models/fuel')
 const VesselModel = require('../models/vessel')
 const AccountModel = require('../models/account')
@@ -6,6 +7,8 @@ const NominationModel = require('../models/nomination')
 const NominationFuelQuantityModel = require('../models/NominationFuelQuantity')
 const { check, validationResult } = require('express-validator')
 const authenticatedMiddleware = require('../middlewares/authenticated')
+const OrderNominationToOwner = require('../config/mails/templates/order-nomination-to-owner')
+const OrderStatusToNominator = require('../config/mails/templates/order-status-to-nominator')
 
 router.use(authenticatedMiddleware)
 
@@ -56,7 +59,7 @@ async (req, res) => {
             fuel_ids.push(fuelQuantity)
         }
 
-        let buyer = await AccountModel.findOne({ email: req.account.email })
+        let buyer = await AccountModel.findOne({ uid: req.account.uid })
 
 
         let nomination = await NominationModel({
@@ -67,6 +70,8 @@ async (req, res) => {
             price: req.body.price,
             destination: req.body.destination
         }).save()
+
+        await mailer(nomination.vessel.owner.email, 'You got a new Order', OrderNominationToOwner(nomination.vessel.owner.name, nomination._id, nomination.nominator.companyName))
 
         return res.status(201).json({
             data: {
@@ -82,5 +87,80 @@ async (req, res) => {
 
 })
 
+
+router.get('/orders',
+async (req, res) => {
+    try {
+        let orders = []
+        let results = await NominationModel.find()
+
+        for (let result of results) {
+            if (result.vessel.owner.uid == req.account.uid) {
+                orders.push(result)
+            }
+        }
+
+        console.log(orders)
+        return res.status(200).json({
+            data: {
+                orders
+            }
+        })
+    } catch (error) {
+        return res.status(500).json({
+            error: error
+        })
+    }
+})
+
+
+router.patch('/',
+async (req, res) => {
+    try {
+
+        let order = await NominationModel.findById(req.body.id)
+
+        if (order && !order.complete && order.vessel.owner.uid == req.account.uid) {
+            let resp = {
+                message: 'Nothing Changed!'
+            }
+
+            if (req.body.accept && order.status == 'placed') {
+                await NominationModel.findOneAndUpdate({_id: req.body.id}, {status: 'accepted'})
+                resp = {
+                    status: 'accepted'
+                }
+            } else if (req.body.reject && order.status == 'placed') {
+                await NominationModel.findOneAndUpdate({_id: req.body.id}, {status: 'rejected'})
+                resp = {
+                    status: 'rejected'
+                }
+            } else if (req.body.complete && order.status == 'accepted') {
+                await NominationModel.findOneAndUpdate({_id: req.body.id}, {status: 'completed'})
+                resp = {
+                    status: 'completed'
+                }
+            }
+
+
+            await mailer(order.nominator.email, 'Status Update for your Nomination', OrderStatusToNominator(order.nominator.name, order._id, resp.status, order.vessel.owner.companyName))
+
+            return res.status(200).json({
+                data: {
+                    resp
+                }
+            })
+        }
+
+        return res.status(204).json({
+            message: 'Something isn\'t right'
+        })
+
+    } catch (error) {
+        return res.status(500).json({
+            error: error
+        })
+    }
+})
 
 module.exports = router
