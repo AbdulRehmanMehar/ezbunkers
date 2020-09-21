@@ -103,27 +103,38 @@ export default new VueRouter({
             component: () => import('@/components/HowItWorks.vue')
         },
 
+        {
+            path: 'chat/:user?',
+            name: 'chat',
+            beforeEnter: userGaurd,
+            component: () => import('@/components/authenticated/Chat.vue')
+        },
 
         {
             path: '/dashboard',
             name: 'user-dash',
             beforeEnter: userGaurd,
-            component: {
-                template: `
-                    <div>
-                       <div class="container my-5">
-                            <router-view></router-view>
-                        </div>
-                    </div>
-                `
-            },
+            component: () => import('@/components/authenticated/Dashboard.vue'),
 
             children: [
 
                 {
                     path: '',
                     name: 'user-dashboard',
-                    component: () => import('@/components/authenticated/Dashboard.vue')
+
+                    component: {
+                        template: `
+                        <div v-else style="height: calc(var(--height-after-navbar) - 5rem); overflow-x: hidden; overflow-y: auto; display: flex; flex-direction: column; justify-content: center; align-items: center">
+                            <h3>{{ currentUser ? currentUser.name : '' }} -  {{ currentUser ? currentUser.companyName : '' }}</h3>
+                            <p>Click on the Links (in the Sidebar) to open specific sections!</p>
+                          </div>
+                        `,
+                        computed: {
+                            currentUser() {
+                                return this.$store.getters['Login/account']
+                            }
+                        }
+                    }
                 },
 
                 {
@@ -157,15 +168,28 @@ export default new VueRouter({
                 },
 
                 {
-                    path: 'chat/:user?',
-                    name: 'chat',
-                    component: () => import('@/components/authenticated/Chat.vue')
-                },
-
-                {
                     path: 'list-orders',
                     name: 'orders-list',
                     component: () => import('@/components/authenticated/Orders.vue')
+                },
+
+                {
+                    path: 'list-nominations',
+                    name: 'nominations-list',
+                    component: () => import('@/components/authenticated/Nominations.vue')
+                },
+
+                {
+                    path: 'leave-a-review/:company?/:order?',
+                    name: 'review',
+                    component: () => import('@/components/authenticated/ReviewForm.vue')
+                },
+
+                {
+                    path: 'reviews/:type?',
+                    name: 'reviews',
+                    component: () => import('@/components/authenticated/ReviewsList.vue'),
+                    props: (route) => ({ type: route.params.type || 'byme' })
                 },
 
             ]
