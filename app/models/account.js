@@ -29,6 +29,14 @@ const AccountSchema = new Schema({
         ref: 'File',
         autopopulate: true
     }],
+
+    reviews: [{
+        type: Schema.Types.ObjectId,
+        ref: 'Review',
+        autopopulate: true
+    }],
+
+
     otp: {
         type: Schema.Types.ObjectId,
         ref: 'OTP',
