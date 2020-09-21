@@ -3,7 +3,7 @@
     <div class="nav flex-column nav-pills" aria-orientation="vertical">
       <router-link class="nav-link" :to="{ name: 'profile', params: {id: $route.params.id} }">Home</router-link>
       <router-link class="nav-link" :to="{ name: 'vessels', params: {id: $route.params.id} }">Vessels</router-link>
-      <router-link class="nav-link" :to="{ name: 'profile', params: {id: 'avd'} }">Home</router-link>
+<!--      <router-link class="nav-link" :to="{ name: 'profile', params: {id: 'avd'} }">Home</router-link>-->
     </div>
   </div>
 </template>
