@@ -4,7 +4,7 @@
             <div class="wrapper">
                 <div class="container">
                     <div class="inner text-center">
-                        <h1 class="display-5 text-uppercase font-weight-bold">Discover. Engage. Review.</h1>
+                        <h1 class="display-5 text-uppercase">Discover. Engage. Review.</h1>
                         <p class="text-capitalize font-weight-lighter">Connects you to the best Bunker Companies Worldwide</p>
                         <Searchbar />
                     </div>
