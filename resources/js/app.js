@@ -9,6 +9,7 @@ import Vue from 'vue'
 import App from '@/App.vue'
 import store from '@/store'
 import router from '@/router'
+import StarRating from 'vue-star-rating'
 import VueToast from 'vue-toast-notification'
 import VueGoodTablePlugin from 'vue-good-table'
 import { library } from '@fortawesome/fontawesome-svg-core'
@@ -53,6 +54,7 @@ Vue.use(VueCarousel)
 Vue.use(VueGoodTablePlugin)
 Vue.component('font-awesome-icon', FontAwesomeIcon)
 Vue.component('country-flag', CountryFlag)
+Vue.component('star-rating', StarRating)
 
 Vue.config.productionTip = false
 
