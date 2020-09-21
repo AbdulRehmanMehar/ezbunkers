@@ -1,6 +1,6 @@
 <template>
     <div style="max-width: fit-content; overflow-x: hidden;">
-        <div class="banner" :style="{ 'background-image' : `url(${banner})` }">
+          <div class="banner" :style="{ 'background-image' : `url('/images/Shipping_LogisticsV2.jpg')` }">
             <div class="wrapper">
                 <div class="container">
                     <div class="inner text-center">
@@ -21,21 +21,21 @@
             </div>
             <!--    Blocks        -->
             <div class="row">
-                <div class="col-md-4 text-center">
+                <div class="col-md-4 my-2 text-center">
                     <div class="col-inner py-5">
                         <font-awesome-icon class="font-weight-lighter icon" :icon="['fas', 'thumbs-up']"></font-awesome-icon>
                         <p class="font-weight-lighter mt-4">Top Ratings</p>
                     </div>
                 </div>
 
-                <div class="col-md-4 text-center">
+                <div class="col-md-4 my-2 text-center">
                     <div class="col-inner py-5">
                         <font-awesome-icon class="font-weight-lighter icon" :icon="['fas', 'check-circle']"></font-awesome-icon>
                         <p class="font-weight-lighter mt-4">Most Reviewed</p>
                     </div>
                 </div>
 
-                <div class="col-md-4 text-center">
+                <div class="col-md-4 my-2 text-center">
                     <div class="col-inner py-5">
                         <font-awesome-icon class="font-weight-lighter icon" :icon="['fas', 'forward']"></font-awesome-icon>
                         <p class="font-weight-lighter mt-4">Fast Services</p>
@@ -45,35 +45,35 @@
         </div>
 
         <!--    Registration    -->
-        <div class="registration" :style="{'background-image': `url(${banner2})`}">
+        <div class="registration" :style="{'background-image': `url('/images/Bunkering_Hose.jpg')`}">
             <div class="wrapper">
                 <div class="container">
                     <div class="inner">
                         <hr style="background-color: #ffffff">
 
                         <div class="row mt-2">
-                            <div class="col-md-3 text-center">
+                            <div class="col-md-3 col-sm-6 text-center">
                                 <div class="circle">
                                     <div class="content">125</div>
                                 </div>
                                 <p class="font-weight-lighter mt-4">Bunker Companies</p>
                             </div>
 
-                            <div class="col-md-3 text-center">
+                            <div class="col-md-3 col-sm-6 text-center">
                                 <div class="circle">
                                     <div class="content">4</div>
                                 </div>
                                 <p class="font-weight-lighter mt-4">Countries</p>
                             </div>
 
-                            <div class="col-md-3 text-center">
+                            <div class="col-md-3 col-sm-6 text-center">
                                 <div class="circle">
                                     <div class="content">345</div>
                                 </div>
                                 <p class="font-weight-lighter mt-4">Transactions</p>
                             </div>
 
-                            <div class="col-md-3 text-center">
+                            <div class="col-md-3 col-sm-6 text-center">
                                 <div class="circle">
                                     <div class="content">100</div>
                                 </div>
@@ -97,7 +97,7 @@
                 <h2 class="font-weight-lighter text-capitalize">How it works?</h2>
                 <hr>
                 <div class="row">
-                    <div class="col-md-4 text-center">
+                    <div class="col-md-4 my-2 text-center">
                         <div class="col-inner py-5">
                             <font-awesome-icon class="font-weight-lighter icon" :icon="['fas', 'search']"></font-awesome-icon>
                             <h5 class="font-weight-lighter my-4 text-primary font-weight-bold">Discover</h5>
@@ -105,7 +105,7 @@
                         </div>
                     </div>
 
-                    <div class="col-md-4 text-center">
+                    <div class="col-md-4 my-2 text-center">
                         <div class="col-inner py-5">
                             <font-awesome-icon class="font-weight-lighter icon" :icon="['fas', 'sms']"></font-awesome-icon>
                             <h5 class="font-weight-lighter my-4 text-primary font-weight-bold">Engage</h5>
@@ -113,7 +113,7 @@
                         </div>
                     </div>
 
-                    <div class="col-md-4 text-center">
+                    <div class="col-md-4 my-2 text-center">
                         <div class="col-inner py-5">
                             <font-awesome-icon class="font-weight-lighter icon" :icon="['fas', 'globe-americas']"></font-awesome-icon>
                             <h5 class="font-weight-lighter my-4 text-primary font-weight-bold">Review</h5>
@@ -133,13 +133,6 @@
     export default{
         name: 'Home',
         components: { Searchbar },
-
-        data() {
-            return {
-                banner: require('@/images/Shipping_LogisticsV2.jpg'),
-                banner2: require('@/images/Bunkering_Hose.jpg')
-            }
-        },
     }
 </script>
 
@@ -216,6 +209,33 @@
         width: calc(100% - 40px);
         margin: 0 auto;
         text-align: center;
+    }
+
+    @media screen and (max-width: 600px) {
+      .banner .container .inner{
+        margin-top: calc(var(--height-after-navbar) / 10);
+      }
+      .registration .container .inner {
+        margin-top: 1rem !important;
+      }
+
+      .registration .container .col-md-3.col-sm-6 {
+        max-width: 50% !important;
+      }
+
+      .registration .col-md-3 .circle {
+        height: 60px;
+        width: 60px;
+        border: 2px solid #ccc;
+      }
+      .registration .col-md-3 .circle .content {
+        font-size: 18px;
+        margin-top: calc(30px - 15px);
+      }
+
+      .registration .container .col-md-3.col-sm-6 p.font-weight-lighter.mt-4 {
+        margin-top: .5rem !important;
+      }
     }
 
 </style>

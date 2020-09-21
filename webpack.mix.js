@@ -1,4 +1,16 @@
 let mix = require('laravel-mix');
+const ImageminPlugin = require('imagemin-webpack-plugin').default;
+const CopyWebpackPlugin = require('copy-webpack-plugin');
+const imageminMozjpeg = require('imagemin-mozjpeg');
+const imageminOptipng = require('imagemin-optipng');
+const imageminPngquant = require('imagemin-pngquant');
+
+
+require('laravel-mix-bundle-analyzer');
+
+if (!mix.inProduction()) {
+    mix.bundleAnalyzer();
+}
 
 /*
  |--------------------------------------------------------------------------
@@ -11,7 +23,70 @@ let mix = require('laravel-mix');
  |
  */
 
-mix.js('resources/js/app.js', 'public/js').sass('resources/scss/app.scss', 'public/css');
+// mix.webpackConfig({
+//     module: {
+//         rules: [{
+//             test: /\.(gif|png|jpe?g|svg)$/i,
+//             use: [
+//                 {
+//                     loader: 'file-loader',
+//                     options: {
+//                         name(resourcePath, resourceQuery) {
+//                             // `resourcePath` - `/absolute/path/to/file.js`
+//                             // `resourceQuery` - `?foo=bar`
+//
+//                             // if (process.env.NODE_ENV === 'development') {
+//                             return '[name].[ext]';
+//                             // }
+//
+//                             // return '[contenthash].[ext]';
+//                         },
+//                         outputPath: 'images/'
+//                     }
+//                 },
+//                 {
+//                     loader: 'image-webpack-loader',
+//                     options: {
+//                         bypassOnDebug: true, // webpack@1.x
+//                         mozjpeg: {
+//                             progressive: true,
+//                             quality: 10
+//                         },
+//                         // optipng.enabled: false will disable optipng
+//                         optipng: {
+//                             enabled: false,
+//                         },
+//                         pngquant: {
+//                             quality: [0.65, 0.90],
+//                             speed: 4
+//                         },
+//                         gifsicle: {
+//                             interlaced: false,
+//                         },
+//                         // the webp option will enable WEBP
+//                         webp: {
+//                             quality: 75
+//                         },
+//                     }
+//                 },
+//             ],
+//         }],
+//     },
+// });
+
+
+
+mix.babelConfig({
+    plugins: ['@babel/plugin-syntax-dynamic-import'],
+});
+
+mix.setPublicPath('public/');
+mix.js('resources/js/app.js', 'js/')
+    .extract(['jquery', 'popper.js'], 'js/jpop')
+    .extract(['bootstrap'], 'js/bootstrap')
+    .extract(['vue', 'axios','vue-router', 'vuex'], 'js/vendor');
+
+// mix.sass('resources/scss/app.scss', 'public/css');
 
 mix.webpackConfig({
     resolve: {
@@ -22,18 +97,66 @@ mix.webpackConfig({
 });
 
 
-mix.setPublicPath('public/');
-mix.webpackConfig({
-    output: {
-        chunkFilename: 'js/chunks/[name].js',
-    },
-});
 
 
-// mix.config.webpackConfig.output = {
-//     chunkFilename: 'public/js/[name].bundle.js',
-//     publicPath: '/js',
-// }
+
+
+mix.config.webpackConfig.output = {
+    chunkFilename: 'js/[name].bundle.js',
+}
+
+
+//
+// mix.copy('resources/js/images', 'public/images');
+//
+
+
+
+
+
+
+
+
+if (!mix.isWatching()) {
+    mix.webpackConfig({
+        // module: {
+        plugins: [
+            new CopyWebpackPlugin({
+                patterns: [
+                    {
+                        from: 'resources/js/images',
+                        to: 'images', // Laravel mix will place this in 'public/img'
+                    }
+                ]
+            }),
+            new ImageminPlugin({
+                test: /\.(jpe?g|png|gif|svg)$/i,
+                plugins: [
+                    imageminMozjpeg({
+                        quality: 20,
+                    }),
+                    imageminOptipng(),
+                    imageminPngquant()
+                ]
+            })
+        ]
+        // }
+    });
+}
+
+if (mix.inProduction()) {
+    mix.options({
+        terser: {
+            terserOptions: {
+                compress: {
+                    drop_console: true
+                }
+            }
+        }
+    });
+
+    mix.version();
+}
 
 // Full API
 // mix.js(src, output);
@@ -49,7 +172,6 @@ mix.webpackConfig({
 // mix.browserSync('my-site.test');
 // mix.combine(files, destination);
 // mix.babel(files, destination); <-- Identical to mix.combine(), but also includes Babel compilation.
-// mix.copy(from, to);
 // mix.copyDirectory(fromDir, toDir);
 // mix.minify(file);
 // mix.sourceMaps(); // Enable sourcemaps

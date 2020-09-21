@@ -3,7 +3,7 @@ const Schema = mongoose.Schema
 
 const AccountSchema = new Schema({
     uid: String,
-    type: String, // can be shipping, bunkering or admin
+    type: String, // can be shipping, bunkering
     name: String,
     email: String,
     password: String,
@@ -16,20 +16,35 @@ const AccountSchema = new Schema({
     companyDescription: String,
     vessels: [{
         type: Schema.Types.ObjectId,
-        ref: 'Vessel'
+        ref: 'Vessel',
+        autopopulate: true
     }],
     companyImages: [{
         type: Schema.Types.ObjectId,
-        ref: 'File'
+        ref: 'File',
+        autopopulate: true
     }],
     companyDocuments: [{
         type: Schema.Types.ObjectId,
-        ref: 'File'
+        ref: 'File',
+        autopopulate: true
     }],
+
+    reviews: [{
+        type: Schema.Types.ObjectId,
+        ref: 'Review',
+        autopopulate: true
+    }],
+
+
     otp: {
         type: Schema.Types.ObjectId,
-        ref: 'OTP'
+        ref: 'OTP',
+        autopopulate: true
     }
 })
+
+
+AccountSchema.plugin(require('mongoose-autopopulate'))
 
 module.exports = mongoose.model('Account', AccountSchema)

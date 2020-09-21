@@ -1,5 +1,5 @@
 <template>
-    <footer class="mt-5 py-5">
+    <footer class="mt-5 py-5 bg-white">
         <div class="container">
             <div class="row">
                 <div class="col-md-6">
@@ -27,6 +27,9 @@
                     <ul class="nav flex-column">
                         <li class="nav-item my-2">
                             <router-link :to="{name: 'how-it-works'}" class="text-dark">How it Works?</router-link>
+                        </li>
+                        <li class="nav-item my-2">
+                          <router-link :to="{name: 'admin-login'}" class="text-dark">Admin Area</router-link>
                         </li>
                     </ul>
                 </div>

@@ -2,14 +2,38 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
 const NominationSchema = new Schema({
-    sellerId: mongoose.Schema.Types.ObjectId,
-    buyerId: mongoose.Schema.Types.ObjectId,
-    fuelType: [mongoose.Schema.Types.ObjectId],
-    fuelQuantity: Number,
-    vesselId: mongoose.Schema.Types.ObjectId,
+    nominator: {
+        type:  Schema.Types.ObjectId,
+        ref: 'Account',
+        autopopulate: true
+    },
+    fuels: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'NominationFuelQuantity',
+            autopopulate: true
+        }
+    ],
+    vessel: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Vessel',
+        autopopulate: true
+    },
     vesselSize: Number,
     price: Number,
     destination: String,
-})
+    status: {
+        type: String,
+        default: 'pending'
+    },
+
+    review: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Review',
+        autopopulate: true
+    }
+}, { timestamps: true })
+
+NominationSchema.plugin(require('mongoose-autopopulate'))
 
 module.exports = mongoose.model('Nomination', NominationSchema)
