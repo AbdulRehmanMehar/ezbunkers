@@ -91,16 +91,8 @@ async (req, res) => {
 router.get('/orders',
 async (req, res) => {
     try {
-        let orders = []
-        let results = await NominationModel.find()
+        let orders = await NominationModel.find()
 
-        for (let result of results) {
-            if (result.vessel.owner.uid == req.account.uid) {
-                orders.push(result)
-            }
-        }
-
-        console.log(orders)
         return res.status(200).json({
             data: {
                 orders
@@ -125,12 +117,12 @@ async (req, res) => {
                 message: 'Nothing Changed!'
             }
 
-            if (req.body.accept && order.status == 'placed') {
+            if (req.body.accept && order.status == 'pending') {
                 await NominationModel.findOneAndUpdate({_id: req.body.id}, {status: 'accepted'})
                 resp = {
                     status: 'accepted'
                 }
-            } else if (req.body.reject && order.status == 'placed') {
+            } else if (req.body.reject && order.status == 'pending') {
                 await NominationModel.findOneAndUpdate({_id: req.body.id}, {status: 'rejected'})
                 resp = {
                     status: 'rejected'
