@@ -24,7 +24,13 @@ const NominationSchema = new Schema({
     destination: String,
     status: {
         type: String,
-        default: 'placed'
+        default: 'pending'
+    },
+
+    review: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Review',
+        autopopulate: true
     }
 }, { timestamps: true })
 
