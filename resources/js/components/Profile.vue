@@ -10,11 +10,11 @@
         </slide>
       </carousel>
         <div class="bg-white">
-          <div class="container p-2">
+          <div class="container p-2 py-4">
             <div class="row">
               <div class="col-md-7 col-sm-12">
                 <div class="d-flex">
-                  <div class="bg-image" :style="{'background-image': `url('${company.companyImages.filter(img => img.type == 'logo')[0].path.slice(3, company.companyImages.filter(img => img.type == 'logo')[0].path.length)}')`, 'height': '65px !important', 'width': '65px !important'}"></div>
+                  <div class="bg-image" :style="{'background-image': `url('${company.companyImages.filter(img => img.type == 'logo')[0] ? company.companyImages.filter(img => img.type == 'logo')[0].path.slice(3, company.companyImages.filter(img => img.type == 'logo')[0].path.length) : '/images/ezbunk.0caa7f64.png'}')`, 'height': '65px !important', 'width': '65px !important'}"></div>
 
                   <div class="px-2">
                     <h3 class="mb-0">{{ company.companyName }}</h3>
@@ -27,7 +27,29 @@
 
               </div>
               <div class="col-md-5 col-sm-12">
-h2
+                <div style="float: left">
+                  <p class="m-1">
+                    <span class="d-inline-block mx-2" style="width: 150px">Overall Rating</span>
+                    <star-rating class="d-inline-block ml-2" :read-only="true" :star-size="16" :show-rating="false" :rating="overallReviews"></star-rating>
+                  </p>
+                  <p class="m-1">
+                    <span class="d-inline-block mx-2" style="width: 150px">Price</span>
+                    <star-rating class="d-inline-block mx-2" :read-only="true" :star-size="16" :show-rating="false" :rating="priceReviews"></star-rating>
+                  </p>
+                  <p class="m-1">
+                    <span class="d-inline-block mx-2" style="width: 150px">Quality</span>
+                    <star-rating class="d-inline-block mx-2" :read-only="true" :star-size="16" :show-rating="false" :rating="qualityReviews"></star-rating>
+                  </p>
+                  <p class="m-1">
+                    <span class="d-inline-block mx-2" style="width: 150px">Communication</span>
+                    <star-rating class="d-inline-block mx-2" :read-only="true" :star-size="16" :show-rating="false" :rating="communicationReviews"></star-rating>
+                  </p>
+                </div>
+                <div class="px-4 text-center">
+                  <h1 class="display-3">{{ Math.floor(overallReviews) }}</h1>
+                  <p class="font-weight-bold">{{ reviewsForCurrentProfile.length }} Reviews</p>
+                </div>
+                <div style="float: none; clear: both"></div>
               </div>
             </div>
           </div>
@@ -60,8 +82,9 @@ export default {
 
   components: { Sidebar },
 
-  created() {
+  beforeCreate() {
     this.$store.dispatch('Account/fetch_accounts')
+    this.$store.dispatch('Review/getReviews')
   },
 
   computed: {
@@ -78,7 +101,46 @@ export default {
         return getCode(this.company.country)
       }
       return 'it'
-    }
+    },
+
+    reviewsForCurrentProfile() {
+      if (this.company) {
+        return this.$store.getters['Review/reviewsForID'](this.company._id)
+      }
+      return null
+    },
+
+    overallReviews() {
+      if (this.reviewsForCurrentProfile) {
+        let reviews = this.reviewsForCurrentProfile.map(review => (review.quality + review.price + review.communication) / 3).reduce((a,b) => a+b, 0)
+        return reviews / this.reviewsForCurrentProfile.length
+      }
+      return 0
+    },
+
+    priceReviews() {
+      if (this.reviewsForCurrentProfile) {
+        let reviews = this.reviewsForCurrentProfile.map(review => review.price).reduce((a,b) => a+b, 0)
+        return reviews / this.reviewsForCurrentProfile.length
+      }
+      return 0
+    },
+
+    qualityReviews() {
+      if (this.reviewsForCurrentProfile) {
+        let reviews = this.reviewsForCurrentProfile.map(review => review.quality).reduce((a,b) => a+b, 0)
+        return reviews / this.reviewsForCurrentProfile.length
+      }
+      return 0
+    },
+
+    communicationReviews() {
+      if (this.reviewsForCurrentProfile) {
+        let reviews = this.reviewsForCurrentProfile.map(review => review.communication).reduce((a,b) => a+b, 0)
+        return reviews / this.reviewsForCurrentProfile.length
+      }
+      return 0
+    },
   }
 }
 </script>
