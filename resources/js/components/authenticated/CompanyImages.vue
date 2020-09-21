@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div v-if="!loading" class="container my-5">
+    <div v-if="!loading" class="container">
       <div class="row">
         <div class="col-md-6">
           <div>
