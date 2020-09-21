@@ -55,6 +55,7 @@ export default new VueRouter({
         {
             path: '/signup',
             name: 'signup',
+            beforeEnter: userGaurdInverted,
             component: () => import('@/components/Signup.vue')
         },
         {
