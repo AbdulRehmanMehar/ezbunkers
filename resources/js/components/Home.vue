@@ -83,7 +83,8 @@
 
                         <div class="row">
                             <div class="col-sm-12 mt-5 text-center">
-                                <router-link :to="{name: 'signup'}" class="btn btn-outline-light btn-lg">Sign Up</router-link>
+                                <router-link v-if="!currentUser" :to="{name: 'signup'}" class="btn btn-outline-light btn-lg">Sign Up</router-link>
+                                <router-link v-else :to="{name: 'user-dashboard'}" class="btn btn-outline-light btn-lg">Dashboard</router-link>
                             </div>
                         </div>
                     </div>
@@ -99,15 +100,15 @@
                 <div class="row">
                     <div class="col-md-4 my-2 text-center">
                         <div class="col-inner py-5">
-                            <font-awesome-icon class="font-weight-lighter icon" :icon="['fas', 'search']"></font-awesome-icon>
-                            <h5 class="font-weight-lighter my-4 text-primary font-weight-bold">Discover</h5>
+                            <div class="bg-image" :style="{'background-image': `url('/images/works-big-1.75647e2b.png')`, 'height': '87px', 'width': '87px', 'margin': '0 auto'}"></div>
+                            <h5 class="font-weight-lighter my-4 text-primary">Discover</h5>
                             <p>Explore &amp; Search for Bunker Companies worldwide using our Search Engine powered by AI</p>
                         </div>
                     </div>
 
                     <div class="col-md-4 my-2 text-center">
                         <div class="col-inner py-5">
-                            <font-awesome-icon class="font-weight-lighter icon" :icon="['fas', 'sms']"></font-awesome-icon>
+                            <div class="bg-image" :style="{'background-image': `url('/images/works-big-2.12957138.png')`, 'height': '87px', 'width': '87px', 'margin': '0 auto'}"></div>
                             <h5 class="font-weight-lighter my-4 text-primary font-weight-bold">Engage</h5>
                             <p>Nominate the Bunker Company of your choice and receive a confirmation on the bunker delivery.</p>
                         </div>
@@ -115,7 +116,7 @@
 
                     <div class="col-md-4 my-2 text-center">
                         <div class="col-inner py-5">
-                            <font-awesome-icon class="font-weight-lighter icon" :icon="['fas', 'globe-americas']"></font-awesome-icon>
+                            <div class="bg-image" :style="{'background-image': `url('/images/works-big-3.570df745.png')`, 'height': '87px', 'width': '87px', 'margin': '0 auto'}"></div>
                             <h5 class="font-weight-lighter my-4 text-primary font-weight-bold">Review</h5>
                             <p>Once your Bunker Transaction has been completed, simply rate the service &amp; receive 0.5% rebate.</p>
                         </div>
@@ -133,6 +134,12 @@
     export default{
         name: 'Home',
         components: { Searchbar },
+
+        computed: {
+          currentUser() {
+            return this.$store.getters['Login/account']
+          }
+        }
     }
 </script>
 
@@ -238,4 +245,14 @@
       }
     }
 
+    .bg-image {
+      width: 100%;
+      position: relative;
+      background-size: cover;
+      height: 100px;
+      background-repeat: no-repeat;
+      background-position: center center;
+      position: relative;
+      border-radius: 4px;
+    }
 </style>
