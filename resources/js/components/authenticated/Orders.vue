@@ -88,7 +88,7 @@ export default {
   name: "OrdersList",
   components: { Loading },
 
-  mounted() {
+  beforeCreate() {
     this.$store.dispatch('Orders/getOrders')
   },
 
@@ -115,7 +115,7 @@ export default {
           sortable: false
         },
         {
-          label: 'Price',
+          label: 'Price (USD)',
           field: 'price',
           sortable: false
         },
