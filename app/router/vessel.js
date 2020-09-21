@@ -119,7 +119,7 @@ async (req, res) => {
 router.get('/mine',
     async (req, res) => {
         try {
-            let account = await AccountModel.findOne({ email: req.account.email })
+            let account = await AccountModel.findOne({ _id: req.account._id })
 
             return res.status(200).json({
                 data: {
