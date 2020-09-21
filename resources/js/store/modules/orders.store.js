@@ -6,7 +6,7 @@ const state = {
     loading: false,
     errors: null,
     success: false,
-    orders: null
+    orders: []
 }
 
 const mutations = {
@@ -71,28 +71,16 @@ const actions = {
             commit('SET_LOADING', true)
             commit('SET_SUCCESS', false)
             commit('SET_ERRORS', null)
-            console.log(rootGetters['Login/account'].token)
             axios.get('/api/nomination/orders', {
                 headers: {
                     authorization: rootGetters['Login/account'].token
                 }
             }).then(resp => {
-                console.log(resp)
-                let current_user = rootGetters['Login/account']
-                let orders = []
                 let results = resp.data.data.orders
-
-                console.log(current_user)
-
-                for (let result of results) {
-                    if (result.vessel.owner.uid == current_user.uid) {
-                        orders.push(result)
-                    }
-                }
 
                 commit('SET_LOADING', false)
                 commit('SET_SUCCESS', true)
-                commit('SET_ORDERS', orders)
+                commit('SET_ORDERS', results)
                 resolve(resp)
             }).catch(error => {
                 console.log(error)
@@ -143,7 +131,12 @@ const getters = {
     errors: (state) => state.errors,
     loading: (state) => state.loading,
     success: (state) => state.success,
-    orders: (state) => state.orders,
+    orders: (state, getters, rootState) => {
+        return state.orders.filter(order => order.vessel.owner._id == rootState.Login.account._id)
+    },
+    nominations: (state, getters, rootState) => {
+        return state.orders.filter(order => order.nominator._id == rootState.Login.account._id)
+    },
 }
 
 export default {
