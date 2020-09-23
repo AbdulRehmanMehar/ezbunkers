@@ -11,7 +11,18 @@ const bodyParser = require('body-parser')
 const app = express()
 const server = http.createServer(app)
 
-mongoose.connect(process.env.DATABASE_URI, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false })
+mongoose.connect(process.env.DATABASE_URI, { 
+	useNewUrlParser: true, 
+	useUnifiedTopology: true, 
+	useFindAndModify: false,
+	
+	server: {
+	    socketOptions: {
+	      socketTimeoutMS: 0,
+	      connectTimeoutMS: 0
+	    }
+	  }
+})
 
 app.use(cors())
 
