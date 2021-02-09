@@ -12,7 +12,7 @@
     "production": "cross-env NODE_ENV=production node_modules/webpack/bin/webpack.js --no-progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js",
     "serve": "nodemon server.js",
     "build": "npm run prod",
-    "start": "npm run prod && node server.js"
+    "start": "npm run prod && cd app/helpers/seed && node admin.js && cd .. && cd .. && cd ..  && node server.js"
   },
   "keywords": [],
   "author": "",
