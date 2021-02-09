@@ -6,7 +6,7 @@ const mongoose = require('mongoose')
 
 
 try {
-    mongoose.connect('mongodb://localhost:27017/orama', { useNewUrlParser: true, useUnifiedTopology: true })
+    mongoose.connect(process.env.DATABASE_URI || 'mongodb://localhost:27017/orama', { useNewUrlParser: true, useUnifiedTopology: true })
 } catch (error) {
     console.log(error)
 }
